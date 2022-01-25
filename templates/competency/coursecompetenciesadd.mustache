@@ -1,0 +1,71 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_displace/coursecompetenciesadd
+
+    Show the current competencies used in a course.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * wwwroot
+    * competencies
+
+    Example context (json):
+    {
+        "competencies": [
+            {
+                id: 1,
+                shortname: "Competency 1",
+                description: "",
+                depth: 0,
+                ...
+            }
+        ],
+        "courseid": 25,
+        "frameworks": [
+            {
+                id: 1,
+                shortname: "Framework 1",
+                ...
+            }
+        ],
+        "wwwroot": "http://.......",
+    }
+}}
+<div class="local_displace coursecompetenciesadd">
+    <form method="get" action="" enctype="multipart/form-data">
+        <input type="hidden" name="courseid" value="{{courseid}}" />
+        <select name="frameworkid" onchange="if(this.value != 0) { this.form.submit(); }">
+            {{#frameworks}}
+            <option value="{{id}}"{{#selected}} selected="selected"{{/selected}}>
+                {{shortname}}
+            </option>
+            {{/frameworks}}
+        </select>
+    </form>
+
+    <ul style="list-style-type: none;">
+    {{#competencies}}
+        {{>local_displace/competency/coursecompetenciesaddtree}}
+    {{/competencies}}
+    </ul>
+</div>

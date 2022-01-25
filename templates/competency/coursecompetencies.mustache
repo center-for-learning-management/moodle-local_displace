@@ -1,0 +1,100 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_displace/coursecompetencies
+
+    Show the current competencies used in a course.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * wwwroot
+    * competencies
+
+    Example context (json):
+    {
+        "competencies": [
+            {
+                id: 1,
+                shortname: "Competency 1",
+                description: "",
+                framework: {
+                    id: 1,
+                    shortname: "Framework 1",
+                }
+            }
+        ],
+        "courseid": 25,
+        "wwwroot": "http://.......",
+    }
+}}
+<div class="local_displace">
+    <p>
+        <a href="{{wwwroot}}/local/displace/competency/coursecompetenciesadd.php?courseid={{courseid}}"
+            class="btn btn-primary">
+            <i class="fa fa-plus-square"></i>
+            {{#str}} addcoursecompetencies, tool_lp {{/str}}
+        </a>
+    </p>
+    <table class="generaltable">
+        <thead>
+            <tr>
+                <td>{{#str}} coursecompetencies, tool_lp {{/str}}</td>
+                <td>{{#str}} competencyframework, tool_lp {{/str}}</td>
+                <td>{{#str}} activities, tool_lp {{/str}}</td>
+                <td>{{#str}} uponcoursecompletion, tool_lp {{/str}}</td>
+            </tr>
+        </thead>
+        <tbody>
+            {{#competencies}}
+                <tr id="tr-{{uniqid}}-{{id}}">
+                    <td>
+                        <details>
+                            <summary>{{#shortentext}} 90, {{{shortname}}} {{/shortentext}}</summary>
+                            <p>
+                                {{description}}
+                            </p>
+                        </details>
+                    </td>
+                    <td>
+                        <details>
+                            <summary>{{framework.shortname}}</summary>
+                            <ul>
+                                {{#_path}}
+                                    <li>
+                                        {{shortname}}
+                                    </li>
+                                {{/_path}}
+                            </ul>
+                        </details>
+
+                    </td>
+                    <td>
+                        -
+                    </td>
+                    <td>
+                        -
+                    </td>
+                </tr>
+            {{/competencies}}
+        </tbody>
+    </table>
+</div>
