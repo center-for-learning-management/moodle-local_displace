@@ -27,7 +27,6 @@ defined('MOODLE_INTERNAL') || die;
 class settings {
     /**
      * Add required settings to admin settings page.
-     * @param category the node category are attached to.
     **/
     public static function admin_settings_page() {
         global $ADMIN;
