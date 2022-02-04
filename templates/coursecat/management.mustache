@@ -1,0 +1,105 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_displace/coursecat
+
+    Show the coursecat management.
+
+    Classes required for JS:
+    * none
+
+    Data attributes required for JS:
+    * none
+
+    Context variables required for this template:
+    * CFG
+    * categories
+    * courses
+
+    Example context (json):
+    {
+        "categories": [
+            {
+                id: 1,
+                name: "Category 1",
+                description: "",
+                ...
+            }
+        ],
+        "courses": [
+            {
+                id: 1,
+                fullname: "Course 1",
+                description: "",
+                ...
+            }
+        ],
+    }
+}}
+<div class="local_displace coursecat management">
+    <!--
+    <p>
+        <input type="search" placeholder="Search for courses @todo translate" />
+    </p>
+    -->
+
+    <div class="columns-2 viewmode-cobmined grid-start grid-row-r d-flex flex-wrap row">
+        <div class="col-sm d-flex flex-wrap px-3 mb-3 grid_column_start">
+            <div class="category-listing card w-100">
+                <h3 class="card-header">{{#str}} coursecategories, core {{/str}}</h3>
+                <table class="generaltable">
+                    <tbody>
+                        {{#categories}}
+                            <tr id="tr-{{uniqid}}-category-{{id}}">
+                                <td>
+                                    <a href="{{CFG.wwwroot}}/local/displace/coursecat/management.php?categoryid={{id}}">
+                                        {{name}}
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- actions -->
+                                </td>
+                            </tr>
+                        {{/categories}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-sm d-flex flex-wrap px-3 mb-3 grid_column_start">
+            <div class="category-listing card w-100">
+                <h3 class="card-header">{{#str}} courses, core {{/str}}</h3>
+                <table class="generaltable">
+                    <tbody>
+                        {{#courses}}
+                            <tr id="tr-{{uniqid}}-course-{{id}}">
+                                <td>
+                                    <a href="{{CFG.wwwroot}}/course/view.php?id={{id}}">
+                                        {{fullname}}
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- actions -->
+                                </td>
+                            </tr>
+                        {{/courses}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

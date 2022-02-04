@@ -35,6 +35,9 @@ if ($hassiteconfig) {
     require_once("$CFG->dirroot/local/displace/competency/settings.php");
     \local_displace\competency\settings::admin_settings_page();
 
+    require_once("$CFG->dirroot/local/displace/coursecat/settings.php");
+    \local_displace\coursecat\settings::admin_settings_page();
+
     require_once("$CFG->dirroot/local/displace/question/settings.php");
     \local_displace\question\settings::admin_settings_page();
 }

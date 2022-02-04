@@ -24,18 +24,27 @@
 defined('MOODLE_INTERNAL') || die;
 
 function local_displace_after_config() {
-    $config = get_config('local_displace');
-    if (!empty($config->competency_enabled)) {
-        if (strpos($_SERVER['SCRIPT_FILENAME'], '/admin/tool/lp/coursecompetencies.php') > 0) {
-            $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];
-            redirect($url);
-        }
-    }
-    if (!empty($config->question_enabled)) {
-        if (strpos($_SERVER['SCRIPT_FILENAME'], 'question/category.php') > 0) {
-            $url = "/local/displace/question/category.php?" . $_SERVER['QUERY_STRING'];
-            redirect($url);
-        }
+    global $CFG;
+
+    switch ($_SERVER['SCRIPT_FILENAME']) {
+        case "$CFG->wwwroot/admin/tool/lp/coursecompetencies.php":
+            if (!empty(get_config('local_displace', 'competency_enabled'))) {
+                $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];
+                redirect($url);
+            }
+        break;
+        case "$CFG->wwwroot/question/category.php":
+            if (!empty(get_config('local_displace', 'question_enabled'))) {
+                $url = "/local/displace/question/category.php?" . $_SERVER['QUERY_STRING'];
+                redirect($url);
+            }
+        break;
+        case "$CFG->wwwroot/course/management.php":
+            if (!empty(get_config('local_displace', 'coursecat_enabled'))) {
+                $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
+                redirect($url);
+            }
+        break;
     }
 }
 
