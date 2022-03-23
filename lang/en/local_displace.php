@@ -26,6 +26,10 @@ $string['cachedef_request'] = 'Requestcache for local_displace';
 $string['cachedef_session'] = 'Sessioncache for local_displace';
 
 $string['competency:setting'] = 'Competency';
+$string['competency:setting:canselect'] = 'Depth for single competency';
+$string['competency:setting:canselect:description'] = 'Specify the required depth within a framework so that a single competency can be added to the course.';
+$string['competency:setting:canselectall'] = 'Depth for multiple competencies';
+$string['competency:setting:canselectall:description'] = 'Specify the required depth within a framework so that a whole sub-competencies can be added to the course.';
 $string['competency:setting:description'] = 'Displace the course competency page';
 $string['competency:setting:enabled'] = 'Enable this displacement';
 

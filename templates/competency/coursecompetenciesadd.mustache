@@ -51,7 +51,7 @@
         "wwwroot": "http://.......",
     }
 }}
-<div class="local_displace coursecompetenciesadd">
+<div class="local_displace competency coursecompetenciesadd">
     <form method="get" action="" enctype="multipart/form-data">
         <input type="hidden" name="courseid" value="{{courseid}}" />
         <select name="frameworkid" onchange="if(this.value != 0) { this.form.submit(); }">
@@ -63,32 +63,59 @@
         </select>
     </form>
 
-    <table border="0" class="generaltable">
+    <table border="0" class="generaltable" id="coursecompetenciesadd-{{uniqid}}">
         <tr>
             <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
-            <th>{{#str}} action {{/str}}</th>
+            <th colspan="2">{{#str}} action {{/str}}</th>
         </tr>
         {{#competencies}}
-        <tr class="childof-{{parentid}} children-visible" data-id="{{id}}" data-path="{{path}}">
+        <tr class="childof-{{parentid}} children-visible {{#used}} used {{/used}}"
+            data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}"
+            {{#used}} style="font-weight: bold;" {{/used}}>
             <td>
                 {{#depth}}
-                &nbsp;&nbsp;
+                <span class="placeholder"></span>
                 {{/depth}}
                 {{#haschildren}}
-                <a href="#" onclick="var a = this; require(['local_displace/competency'], function(C) { C.toggleNode(a)}); return false;">
-                    {{shortname}} {{parentid}}
-                </a>
+                    <i class="fa fa-folder"></i>
+                    <a href="#" onclick="var a = this; require(['local_displace/competency'], function(C) { C.toggleNode(a)}); return false;">
+                        {{shortname}}
+                    </a>
                 {{/haschildren}}
                 {{^haschildren}}
-                    {{shortname}} {{parentid}}
+                    <i class="fa fa-file"></i>
+                    {{shortname}}
                 {{/haschildren}}
             </td>
-            <td>-</td>
+            <td>
+                {{#canselect}}
+                    {{#used}}
+                        <a href="#" onclick="{{{btnremovesingle}}}"
+                            class="removesingle">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                    {{/used}}
+                    {{^used}}
+                        <a href="#" onclick="{{{btnaddsingle}}}"
+                            class="addsingle">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    {{/used}}
+                {{/canselect}}
+            </td>
+            <td>
+                {{#haschildren}}{{#canselectall}}
+                    <a href="#" onclick="{{{btnaddmultiple}}}"
+                        class="addmultiple">
+                        <i class="fa fa-list"></i>
+                    </a>
+                {{/canselectall}}{{/haschildren}}
+            </td>
         </tr>
         {{/competencies}}
     </table>
 </div>
 
 {{#js}}
-require(['local_displace/competency'], function(C) { C.toggleInit()});
+require(['local_displace/competency'], function(C) { C.toggleInit('{{uniqid}}')});
 {{/js}}

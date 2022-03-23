@@ -46,6 +46,23 @@ class settings {
                 PARAM_INT
             )
         );
-
+        $settings->add(
+            new \admin_setting_configtext(
+                'local_displace/competency_canselect',
+                get_string('competency:setting:canselect', 'local_displace'),
+                get_string('competency:setting:canselect:description', 'local_displace'),
+                2,
+                PARAM_INT
+            )
+        );
+        $settings->add(
+            new \admin_setting_configtext(
+                'local_displace/competency_canselectall',
+                get_string('competency:setting:canselectall', 'local_displace'),
+                get_string('competency:setting:canselectall:description', 'local_displace'),
+                1,
+                PARAM_INT
+            )
+        );
     }
 }

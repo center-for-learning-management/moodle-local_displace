@@ -37,10 +37,18 @@ $PAGE->set_context($coursecontext);
 $PAGE->set_url('/local/displace/competency/coursecompetenciesadd.php', $urlparams);
 $PAGE->set_title($course->fullname);
 $PAGE->set_heading($course->fullname);
+$PAGE->requires->css('/local/webuntis/style/competency.css');
 
 $ccurl = new \moodle_url('/local/displace/competency/coursecompetencies.php', [ 'courseid' => $course->id]);
 $PAGE->navbar->add(get_string('coursecompetencies', 'tool_lp'), $ccurl);
 $PAGE->navbar->add(get_string('addcoursecompetencies', 'tool_lp'), $PAGE->url);
+
+$sql = "SELECT DISTINCT(c.id) id
+            FROM {competency} c, {competency_coursecomp} ccc
+            WHERE c.id = ccc.competencyid
+                AND ccc.courseid = ?";
+$params = [ $course->id ];
+$usedids = array_keys($DB->get_records_sql($sql, $params));
 
 $path = explode('/', $coursecontext->path);
 list($insql, $inparams) = $DB->get_in_or_equal($path);
@@ -73,6 +81,40 @@ $params = [
     'wwwroot'      => $CFG->wwwroot,
 ];
 
+$canselect = get_config('local_displace', 'competency_canselect');
+$canselectall = get_config('local_displace', 'competency_canselectall');
+
+foreach ($competencytree as $competency) {
+    if (in_array($competency->id, $usedids)) {
+        $competency->used = 1;
+    }
+    if (count($competency->depth) > $canselect) {
+        $competency->canselect = 1;
+    }
+    if (count($competency->depth) > $canselectall) {
+        $competency->canselectall = 1;
+    }
+}
+
+$params['btnaddmultiple'] = implode("", array(
+    "var a = this;",
+    "require(['local_displace/competency'], function (C) {",
+    "    C.competencyAddMultiple(a);",
+    "}); return false;"
+));
+$params['btnaddsingle'] = implode("", array(
+    "var a = this;",
+    "require(['local_displace/competency'], function (C) {",
+    "    C.competencyAddSingle(a);",
+    "}); return false;"
+));
+$params['btnremovesingle'] = implode("", array(
+    "var a = this;",
+    "require(['local_displace/competency'], function (C) {",
+    "    C.competencyRemoveSingle(a);",
+    "}); return false;"
+));
+//print_r($competencytree);die();
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_displace/competency/coursecompetenciesadd', $params);
 echo $OUTPUT->footer();
