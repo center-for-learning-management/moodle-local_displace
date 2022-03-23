@@ -63,11 +63,11 @@ foreach ($frameworks as &$framework) {
 }
 
 require_once("$CFG->dirroot/local/displace/competency/locallib.php");
-$competencytree = (object)[];
-\local_displace\competency\locallib::build_competency_tree($frameworkid, '/0/', $competencytree);
 
+$competencytree = \local_displace\competency\locallib::build_competency_list($frameworkid, '/0/');
+//print_r($competencytree);die();
 $params = [
-    'competencies' => $competencytree->competencies,
+    'competencies' => $competencytree,
     'courseid'     => $course->id,
     'frameworks'   => $frameworks,
     'wwwroot'      => $CFG->wwwroot,
