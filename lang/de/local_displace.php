@@ -25,4 +25,25 @@ $string['cachedef_application'] = 'Applicationcache für local_displace';
 $string['cachedef_request'] = 'Requestcache für local_displace';
 $string['cachedef_session'] = 'Sessioncache für local_displace';
 
+$string['competency:remove:title'] = 'Kompetenz entfernen';
+$string['competency:remove:multiple'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher alle Kompetenzen innerhalb von "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';
+$string['competency:remove:single'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher die Kompetenz "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';
+
+$string['competency:setting'] = 'Kompetenzen';
+$string['competency:setting:canselect'] = 'Tiefe für Einzelauswahl';
+$string['competency:setting:canselect:description'] = 'Geben Sie die erforderliche Tiefe innerhalb eines Kompetenzrahmens an, damit eine einzelne Kompetenz zum Kurs hinzugefügt werden kann.';
+$string['competency:setting:canselectall'] = 'Tiefe für Bulk-Auswahl';
+$string['competency:setting:canselectall:description'] = 'Geben Sie die erforderliche Tiefe innerhalb eines Kompetenzrahmens an, damit alle Teilkompetenzen einer Kompetenz zum Kurs hinzugefügt werden können.';
+$string['competency:setting:description'] = 'Ersetze die Kurskompetenz-Seite';
+$string['competency:setting:enabled'] = 'Aktiviere diese Ersetzung';
+
+$string['coursecat:setting'] = 'Kursbereiche';
+$string['coursecat:setting:description'] = 'Ersetze die Kursbereichsverwaltung';
+$string['coursecat:setting:enabled'] = 'Aktiviere diese Ersetzung';
+
 $string['pluginname'] = 'Displace';
+$string['privacy:metadata'] = 'Es werden in diesem Plugin keine personenbezogenen Daten gespeichert.';
+
+$string['question:setting'] = 'Fragensammlung';
+$string['question:setting:description'] = 'Ersetze die Fragensammlung';
+$string['question:setting:enabled'] = 'Aktiviere diese Ersetzung';
