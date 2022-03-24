@@ -41,6 +41,8 @@ class externallib extends external_api {
             )
         );
 
+        
+
         return json_encode($seltree, JSON_NUMERIC_CHECK);
     }
     public static function get_category_returns() {
