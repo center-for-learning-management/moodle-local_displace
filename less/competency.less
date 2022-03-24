@@ -1,10 +1,29 @@
 // out: ../style/competency.css, sourcemap: false, compress: true
 .local_displace.competency {
-    .placeholder {
-        display: inline-block;
-        width: 25px;
+    .queue-pending {
+        blur: 5px;
+    }
+    .addsingle {
+        display: block;
+    }
+    .removesingle {
+        display: none;
+    }
+    .displace-alert {
+        &.danger {
+            background-color: rgba(255,0,0,0.3);
+        }
+        &.success {
+            background-color: rgba(0,255,0,0.3);
+        }
     }
     .used {
         font-weight: bold;
+        .addsingle {
+            display: none;
+        }
+        .removesingle {
+            display: block;
+        }
     }
 }

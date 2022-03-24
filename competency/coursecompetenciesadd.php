@@ -27,6 +27,9 @@ $courseid = required_param('courseid', PARAM_INT);
 $course = \get_course($courseid);
 $coursecontext = \context_course::instance($courseid);
 require_login($course);
+\core_competency\api::require_enabled();
+require_capability('moodle/competency:coursecompetencymanage', $coursecontext);
+require_capability('moodle/competency:coursecompetencyconfigure', $coursecontext);
 
 $frameworkid = optional_param('frameworkid', 0, PARAM_INT);
 
@@ -37,7 +40,7 @@ $PAGE->set_context($coursecontext);
 $PAGE->set_url('/local/displace/competency/coursecompetenciesadd.php', $urlparams);
 $PAGE->set_title($course->fullname);
 $PAGE->set_heading($course->fullname);
-$PAGE->requires->css('/local/webuntis/style/competency.css');
+$PAGE->requires->css('/local/displace/style/competency.css');
 
 $ccurl = new \moodle_url('/local/displace/competency/coursecompetencies.php', [ 'courseid' => $course->id]);
 $PAGE->navbar->add(get_string('coursecompetencies', 'tool_lp'), $ccurl);
@@ -94,6 +97,7 @@ foreach ($competencytree as $competency) {
     if (count($competency->depth) > $canselectall) {
         $competency->canselectall = 1;
     }
+    $competency->depthpx = count($competency->depth) * 25;
 }
 
 $params['btnaddmultiple'] = implode("", array(

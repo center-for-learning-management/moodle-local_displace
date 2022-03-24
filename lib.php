@@ -25,21 +25,20 @@ defined('MOODLE_INTERNAL') || die;
 
 function local_displace_after_config() {
     global $CFG;
-
     switch ($_SERVER['SCRIPT_FILENAME']) {
-        case "$CFG->wwwroot/admin/tool/lp/coursecompetencies.php":
+        case "$CFG->dirroot/admin/tool/lp/coursecompetencies.php":
             if (!empty(get_config('local_displace', 'competency_enabled'))) {
                 $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
         break;
-        case "$CFG->wwwroot/question/category.php":
+        case "$CFG->dirroot/question/category.php":
             if (!empty(get_config('local_displace', 'question_enabled'))) {
                 $url = "/local/displace/question/category.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
         break;
-        case "$CFG->wwwroot/course/management.php":
+        case "$CFG->dirroot/course/management.php":
             if (!empty(get_config('local_displace', 'coursecat_enabled'))) {
                 $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);

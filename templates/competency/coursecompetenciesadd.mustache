@@ -63,45 +63,26 @@
         </select>
     </form>
 
-    <table border="0" class="generaltable" id="coursecompetenciesadd-{{uniqid}}">
+    <table border="0" class="generaltable" id="coursecompetenciesadd-{{uniqid}}"
+        data-courseid="{{courseid}}">
         <tr>
             <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
             <th colspan="2">{{#str}} action {{/str}}</th>
         </tr>
         {{#competencies}}
-        <tr class="childof-{{parentid}} children-visible {{#used}} used {{/used}}"
-            data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}"
-            {{#used}} style="font-weight: bold;" {{/used}}>
-            <td>
-                {{#depth}}
-                <span class="placeholder"></span>
-                {{/depth}}
+        <tr class="childof-{{parentid}} {{#used}} used {{/used}}"
+            data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}">
+            <td style="padding-left: {{depthpx}}px;">
                 {{#haschildren}}
                     <i class="fa fa-folder"></i>
                     <a href="#" onclick="var a = this; require(['local_displace/competency'], function(C) { C.toggleNode(a)}); return false;">
-                        {{shortname}}
+                        <span class="shortname">{{shortname}}</span>
                     </a>
                 {{/haschildren}}
                 {{^haschildren}}
                     <i class="fa fa-file"></i>
-                    {{shortname}}
+                    <span class="shortname">{{shortname}}</span>
                 {{/haschildren}}
-            </td>
-            <td>
-                {{#canselect}}
-                    {{#used}}
-                        <a href="#" onclick="{{{btnremovesingle}}}"
-                            class="removesingle">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    {{/used}}
-                    {{^used}}
-                        <a href="#" onclick="{{{btnaddsingle}}}"
-                            class="addsingle">
-                            <i class="fa fa-plus"></i>
-                        </a>
-                    {{/used}}
-                {{/canselect}}
             </td>
             <td>
                 {{#haschildren}}{{#canselectall}}
@@ -110,6 +91,16 @@
                         <i class="fa fa-list"></i>
                     </a>
                 {{/canselectall}}{{/haschildren}}
+            </td>
+            <td>
+                <a href="#" onclick="{{{btnremovesingle}}}"
+                    class="removesingle">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="#" onclick="{{{btnaddsingle}}}"
+                    class="addsingle">
+                    <i class="fa fa-plus"></i>
+                </a>
             </td>
         </tr>
         {{/competencies}}
