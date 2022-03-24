@@ -26,15 +26,18 @@ require_login();
 
 $categoryid = optional_param('categoryid', 0, PARAM_INT);
 
+$topcategory = (object) [
+    'id' => 0,
+    'name' => $CFG->fullname,
+    'parent' => -1,
+    'path' => '/',
+];
+
 if (!empty($categoryid)) {
     $category = $DB->get_record('course_categories', [ 'id' => $categoryid ], '*', MUST_EXIST);
 } else {
-    $category = (object) [
-        'id' => 0,
-        'name' => $CFG->fullname,
-    ];
+    $category = $topcategory;
 }
-
 
 $urlparams = array('categoryid' => $category->id);
 $PAGE->set_context(\context_system::instance());
@@ -53,18 +56,32 @@ $ccurl = new \moodle_url('/local/displace/coursecat/management.php', []);
 $PAGE->navbar->add(get_string('coursecatmanagement', 'core'), $ccurl);
 
 if (!empty($category->id)) {
-    // @todo recursively print navbar for all parent categories.
-    $PAGE->navbar->add($category->name, $PAGE->url);
+    $paths = explode('/', $category->path);
+    list($insql, $inparams) = $DB->get_in_or_equal($paths);
+    $sql = "SELECT * FROM {course_categories} WHERE id $insql ORDER BY depth ASC";
+    $categories = $DB->get_records_sql($sql, $inparams);
+    foreach ($categories as $_category) {
+        $PAGE->url->param('category', $_category->id);
+        $PAGE->navbar->add($_category->name, $PAGE->url);
+    }
 }
 
 $categories = $DB->get_records('course_categories', [ 'parent' => $category->id], 'name ASC');
 $courses = $DB->get_records('course', [ 'category' => $category->id], 'fullname ASC');
 
+if (!empty($category->parent)) {
+    $parent = $DB->get_record('course_categories', [ 'id' => $category->parent ]);
+} else {
+    $parent = $topcategory;
+}
+
 $params = [
     'CFG' => $CFG,
     'categories' => array_values($categories),
     'courses' => array_values($courses),
+    'parent' => $parent,
 ];
+
 echo $OUTPUT->header();
 echo $OUTPUT->render_from_template('local_displace/coursecat/management', $params);
 echo $OUTPUT->footer();

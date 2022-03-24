@@ -63,10 +63,24 @@
                 <h3 class="card-header">{{#str}} coursecategories, core {{/str}}</h3>
                 <table class="generaltable">
                     <tbody>
+                        {{#parent}}
+                            <tr id="tr-{{uniqid}}-category-{{id}}">
+                                <td>
+                                    <a href="{{CFG.wwwroot}}/local/displace/coursecat/management.php?categoryid={{id}}">
+                                        <i class="fa fa-arrow-up"></i>
+                                        {{name}}
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- actions -->
+                                </td>
+                            </tr>
+                        {{/parent}}
                         {{#categories}}
                             <tr id="tr-{{uniqid}}-category-{{id}}">
                                 <td>
                                     <a href="{{CFG.wwwroot}}/local/displace/coursecat/management.php?categoryid={{id}}">
+                                        <i class="fa fa-arrow-down"></i>
                                         {{name}}
                                     </a>
                                 </td>
@@ -89,6 +103,7 @@
                             <tr id="tr-{{uniqid}}-course-{{id}}">
                                 <td>
                                     <a href="{{CFG.wwwroot}}/course/view.php?id={{id}}">
+                                        <i class="fa fa-external-link"></i>
                                         {{fullname}}
                                     </a>
                                 </td>
