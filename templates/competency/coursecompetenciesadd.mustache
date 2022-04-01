@@ -70,7 +70,7 @@
             <th colspan="2">{{#str}} action {{/str}}</th>
         </tr>
         {{#competencies}}
-        <tr class="childof-{{parentid}} {{#used}} used {{/used}}"
+        <tr class="hidden childof-{{parentid}} {{#used}} used {{/used}}"
             data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}">
             <td style="padding-left: {{depthpx}}px;">
                 {{#haschildren}}
@@ -93,6 +93,7 @@
                 {{/canselectall}}{{/haschildren}}
             </td>
             <td>
+                {{#canselect}}
                 <a href="#" onclick="{{{btnremovesingle}}}"
                     class="removesingle">
                     <i class="fa fa-trash"></i>
@@ -101,6 +102,7 @@
                     class="addsingle">
                     <i class="fa fa-plus"></i>
                 </a>
+                {{/canselect}}
             </td>
         </tr>
         {{/competencies}}
