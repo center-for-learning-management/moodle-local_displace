@@ -70,7 +70,7 @@
             <th colspan="2">{{#str}} action {{/str}}</th>
         </tr>
         {{#competencies}}
-        <tr class="hidden childof-{{parentid}} {{#used}} used {{/used}}"
+        <tr class="{{#parentid}} hidden {{/parentid}} childof-{{parentid}} {{#used}} used {{/used}}"
             data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}">
             <td style="padding-left: {{depthpx}}px;">
                 {{#haschildren}}
