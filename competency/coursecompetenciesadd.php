@@ -29,7 +29,6 @@ $coursecontext = \context_course::instance($courseid);
 require_login($course);
 \core_competency\api::require_enabled();
 require_capability('moodle/competency:coursecompetencymanage', $coursecontext);
-require_capability('moodle/competency:coursecompetencyconfigure', $coursecontext);
 
 $frameworkid = optional_param('frameworkid', 0, PARAM_INT);
 
