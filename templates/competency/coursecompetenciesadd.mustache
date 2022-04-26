@@ -67,7 +67,7 @@
         data-courseid="{{courseid}}">
         <tr>
             <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
-            <th colspan="2">{{#str}} action {{/str}}</th>
+            <th colspan="2" style="text-align: center;">{{#str}} action {{/str}}</th>
         </tr>
         {{#competencies}}
         <tr class="{{#parentid}} hidden {{/parentid}} childof-{{parentid}} {{#used}} used {{/used}}"
@@ -84,7 +84,7 @@
                     <span class="shortname">{{shortname}}</span>
                 {{/haschildren}}
             </td>
-            <td>
+            <td style="text-align: right;">
                 {{#haschildren}}{{#canselectall}}
                     <a href="#" onclick="{{{btnaddmultiple}}}"
                         class="addmultiple">
@@ -92,7 +92,7 @@
                     </a>
                 {{/canselectall}}{{/haschildren}}
             </td>
-            <td>
+            <td style="text-align: left;">
                 {{#canselect}}
                 <a href="#" onclick="{{{btnremovesingle}}}"
                     class="removesingle">

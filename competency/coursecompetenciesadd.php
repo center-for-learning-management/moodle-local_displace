@@ -86,16 +86,29 @@ $params = [
 $canselect = get_config('local_displace', 'competency_canselect');
 $canselectall = get_config('local_displace', 'competency_canselectall');
 
+$uses_komet = get_config('local_komettranslator', 'version');
+$komet_types = [ 'subject', 'topic', 'descriptor' ];
+
 foreach ($competencytree as $competency) {
     if (in_array($competency->id, $usedids)) {
         $competency->used = 1;
     }
-    if (count($competency->depth) > $canselect) {
+    $usedbykomet = false;
+
+    if (!empty($uses_komet)) {
+        foreach ($komet_types as $komet_type) {
+            $usedbykomet = \local_komettranslator\locallib::mapping_internal($komet_type, $competency->id);
+            if (!empty($usedbykomet->id)) break;
+        }
+    }
+
+    if (empty($uses_komet) || empty($usedbykomet->id) || count($competency->depth) > $canselect) {
         $competency->canselect = 1;
     }
-    if (count($competency->depth) > $canselectall) {
+    if (empty($uses_komet) || empty($usedbykomet->id) || count($competency->depth) > $canselectall) {
         $competency->canselectall = 1;
     }
+
     $competency->depthpx = count($competency->depth) * 25;
 }
 
