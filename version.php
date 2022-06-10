@@ -23,9 +23,9 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2022032400;
+$plugin->version  = 2022061000;
 $plugin->requires = 2018051700;
 $plugin->component = 'local_displace';
-$plugin->release = '0.1';
+$plugin->release = '0.2';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->dependencies = array();

@@ -37,7 +37,10 @@ require_login($course);
 $coursecompetencyconfigure = has_capability('moodle/competency:coursecompetencyconfigure', $context);
 $canmanagecoursecompetencies = has_capability('moodle/competency:coursecompetencymanage', $context);
 
-$urlparams = array('courseid' => $course->id, 'mod' => $currentmodule);
+$urlparams = array('courseid' => $course->id);
+if (!empty($currentmodule)) {
+    $urlparams['mod'] = $currentmodule;
+}
 $PAGE->set_context($context);
 $PAGE->set_url('/local/displace/competency/coursecompetencies.php', $urlparams);
 $PAGE->set_title($course->fullname);
@@ -83,7 +86,7 @@ foreach ($coursecomps as &$coursecomp) {
         $coursecomp->coursemodules[] = (object) [
             'iconurl' => $OUTPUT->image_url('icon', $cminfo->modname),
             'name' => $cminfo->name,
-            'url' => $cminfo->url->__toString(),
+            'url' => (!empty($cminfo->url) ? $cminfo->url->__toString() : ''),
         ];
     }
     $coursecomp->hascoursemodules = count($coursecomp->coursemodules);
