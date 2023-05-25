@@ -25,25 +25,32 @@ defined('MOODLE_INTERNAL') || die;
 
 function local_displace_after_config() {
     global $CFG;
-    switch ($_SERVER['SCRIPT_FILENAME']) {
-        case "$CFG->dirroot/admin/tool/lp/coursecompetencies.php":
+
+    // get path within the moodle dir + fix slashes in windows
+    $subpath = str_replace(
+        str_replace('\\', '/', $CFG->dirroot),
+        '',
+        str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']));
+
+    switch ($subpath) {
+        case "/admin/tool/lp/coursecompetencies.php":
             if (!empty(get_config('local_displace', 'competency_enabled'))) {
                 $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
-        break;
-        case "$CFG->dirroot/question/category.php":
+            break;
+        case "/question/category.php":
             if (!empty(get_config('local_displace', 'question_enabled'))) {
                 $url = "/local/displace/question/category.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
-        break;
-        case "$CFG->dirroot/course/management.php":
+            break;
+        case "/course/management.php":
             if (!empty(get_config('local_displace', 'coursecat_enabled'))) {
                 $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
-        break;
+            break;
     }
 }
 

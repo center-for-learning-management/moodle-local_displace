@@ -32,12 +32,12 @@ if ($hassiteconfig) {
         )
     );
 
-    require_once("$CFG->dirroot/local/displace/competency/settings.php");
+    require_once(__DIR__ . "/competency/settings.php");
     \local_displace\competency\settings::admin_settings_page();
 
-    require_once("$CFG->dirroot/local/displace/coursecat/settings.php");
+    require_once(__DIR__ . "/coursecat/settings.php");
     \local_displace\coursecat\settings::admin_settings_page();
 
-    require_once("$CFG->dirroot/local/displace/question/settings.php");
+    require_once(__DIR__ . "/question/settings.php");
     \local_displace\question\settings::admin_settings_page();
 }
