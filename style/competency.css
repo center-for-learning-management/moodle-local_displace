@@ -1,1 +1,24 @@
-.local_displace.competency .queue-pending{blur:5px}.local_displace.competency .addsingle{display:block}.local_displace.competency .removesingle{display:none}.local_displace.competency .displace-alert.danger{background-color:rgba(255,0,0,0.3)}.local_displace.competency .displace-alert.success{background-color:rgba(0,255,0,0.3)}.local_displace.competency .used{font-weight:bold}.local_displace.competency .used .addsingle{display:none}.local_displace.competency .used .removesingle{display:block}
+.local_displace.competency .queue-pending {
+  blur: 5px;
+}
+.local_displace.competency .addsingle {
+  display: block;
+}
+.local_displace.competency .removesingle {
+  display: none;
+}
+.local_displace.competency .displace-alert.danger {
+  background-color: rgba(255, 0, 0, 0.3);
+}
+.local_displace.competency .displace-alert.success {
+  background-color: rgba(0, 255, 0, 0.3);
+}
+.local_displace.competency .used {
+  font-weight: bold;
+}
+.local_displace.competency .used .addsingle {
+  display: none;
+}
+.local_displace.competency .used .removesingle {
+  display: block;
+}
