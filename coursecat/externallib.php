@@ -28,8 +28,8 @@ defined('MOODLE_INTERNAL') || die;
 
 class externallib extends \external_api {
     public static function get_category_parameters() {
-        return new external_function_parameters(array(
-            'categoryid' => new external_value(PARAM_INT, 'categoryid'),
+        return new \external_function_parameters(array(
+            'categoryid' => new \external_value(PARAM_INT, 'categoryid'),
         ));
     }
     public static function get_category($categoryid) {
@@ -46,6 +46,6 @@ class externallib extends \external_api {
         return json_encode($seltree, JSON_NUMERIC_CHECK);
     }
     public static function get_category_returns() {
-        return new external_value(PARAM_RAW, 'Returns nested coursecategories and courses as JSON string.');
+        return new \external_value(PARAM_RAW, 'Returns nested coursecategories and courses as JSON string.');
     }
 }
