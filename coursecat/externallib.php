@@ -26,7 +26,7 @@ namespace local_displace\coursecat;
 
 defined('MOODLE_INTERNAL') || die;
 
-class externallib extends external_api {
+class externallib extends \external_api {
     public static function get_category_parameters() {
         return new external_function_parameters(array(
             'categoryid' => new external_value(PARAM_INT, 'categoryid'),
@@ -41,7 +41,7 @@ class externallib extends external_api {
             )
         );
 
-        
+
 
         return json_encode($seltree, JSON_NUMERIC_CHECK);
     }
