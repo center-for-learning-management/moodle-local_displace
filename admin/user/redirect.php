@@ -21,22 +21,17 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../../../config.php');
 
-$sitecontext = \context_system::instance();
-require_admin();
+defined('MOODLE_INTERNAL') || die;
 
-$PAGE->set_context($sitecontext);
-$PAGE->set_url('/local/displace/admin/user/user.php');
-$PAGE->set_primary_active_tab('siteadminnode');
-$PAGE->navbar->add(get_string('userlist', 'admin'), $PAGE->url);
-
-$table = new \local_displace\admin\user\table();
-
-echo $OUTPUT->header();
-$table->out();
-if (has_capability('moodle/user:create', $sitecontext)) {
-    $url = new moodle_url('/user/editadvanced.php', array('id' => -1));
-    echo $OUTPUT->single_button($url, get_string('addnewuser'), 'get');
+$handle_if_given = [ 'confirm', 'confirmuser', 'delete', 'suspend', 'unsuspend', 'unlock', 'resendemail' ];
+$handle_prevent = false;
+foreach ($handle_if_given as $hig) {
+    if (!empty(optional_param($hig, '', PARAM_TEXT))) {
+        $handle_prevent = true;
+    }
 }
-echo $OUTPUT->footer();
+if (!$handle_prevent) {
+    $url = "/local/displace/admin/user/user.php?" . $_SERVER['QUERY_STRING'];
+    redirect($url);
+}
