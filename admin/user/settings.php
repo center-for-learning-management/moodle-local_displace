@@ -16,18 +16,35 @@
 
 /**
  * @package   local_displace
- * @copyright 2022 Zentrum für Lernmanagement (www.lernmanagement.at)
+ * @copyright 2023 Austrian Federal Ministry of Education
  * @author    Robert Schrenk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_displace\admin\user;
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2023102700;
-$plugin->requires = 2018051700;
-$plugin->component = 'local_displace';
-$plugin->release = '0.3';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'local_table_sql' => 2023102300,
-];
+class settings {
+    /**
+     * Add required settings to admin settings page.
+    **/
+    public static function admin_settings_page() {
+        global $ADMIN;
+        if (empty($ADMIN)) {
+            return;
+        }
+
+        $settings = new \admin_settingpage('local_displace_admin_user', get_string('admin:user:setting', 'local_displace'));
+        $ADMIN->add('local_displace', $settings);
+
+        $settings->add(
+            new \admin_setting_configcheckbox(
+                'local_displace/admin_user_enabled',
+                get_string('admin:user:setting:enabled', 'local_displace'),
+                '',
+                '',
+                PARAM_INT
+            )
+        );
+    }
+}
