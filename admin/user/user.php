@@ -16,18 +16,26 @@
 
 /**
  * @package   local_displace
- * @copyright 2022 Zentrum für Lernmanagement (www.lernmanagement.at)
+ * @copyright 2023 Austrian Federal Ministry of Education
  * @author    Robert Schrenk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+require_once('../../../../config.php');
 
-$plugin->version  = 2023102700;
-$plugin->requires = 2018051700;
-$plugin->component = 'local_displace';
-$plugin->release = '0.3';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'local_table_sql' => 2023102300,
-];
+$sitecontext = \context_system::instance();
+require_admin();
+
+$PAGE->set_context($sitecontext);
+$PAGE->set_url('/local/displace/admin/user/user.php');
+$PAGE->set_primary_active_tab('siteadminnode');
+$PAGE->navbar->add(get_string('userlist', 'admin'), $PAGE->url);
+
+
+
+echo $OUTPUT->header();
+if (has_capability('moodle/user:create', $sitecontext)) {
+    $url = new moodle_url('/user/editadvanced.php', array('id' => -1));
+    echo $OUTPUT->single_button($url, get_string('addnewuser'), 'get');
+}
+echo $OUTPUT->footer();
