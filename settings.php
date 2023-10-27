@@ -32,6 +32,9 @@ if ($hassiteconfig) {
         )
     );
 
+    require_once("$CFG->dirroot/local/displace/admin/user/settings.php");
+    \local_displace\admin\user\settings::admin_settings_page();
+
     require_once("$CFG->dirroot/local/displace/competency/settings.php");
     \local_displace\competency\settings::admin_settings_page();
 
