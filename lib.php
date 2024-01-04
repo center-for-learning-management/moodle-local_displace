@@ -25,7 +25,13 @@ defined('MOODLE_INTERNAL') || die;
 
 function local_displace_after_config() {
     global $CFG;
+
     switch ($_SERVER['SCRIPT_FILENAME']) {
+        case "$CFG->dirroot/admin/user.php":
+            if (!empty(get_config('local_displace', 'admin_user_enabled'))) {
+                include("{$CFG->dirroot}/local/displace/admin/user/redirect.php");
+            }
+        break;
         case "$CFG->dirroot/admin/tool/lp/coursecompetencies.php":
             if (!empty(get_config('local_displace', 'competency_enabled'))) {
                 $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];
