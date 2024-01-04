@@ -104,6 +104,14 @@ class table extends table_sql {
         return "<a href=\"mailto:{$row->email}\">{$row->email}</a>";
     }
 
+    public function col_firstaccess($row) {
+        if ($row->lastaccess) {
+            return format_time(time() - $row->lastaccess);
+        } else {
+            return get_string('never');
+        }
+    }
+
     public function col_lastaccess($row) {
         if ($row->lastaccess) {
             return format_time(time() - $row->lastaccess);
@@ -118,6 +126,10 @@ class table extends table_sql {
 
     public function col_deleted($row) {
         return $row->deleted ? get_string('yes') : get_string('no');
+    }
+
+    public function col_emailstop($row) {
+        return $row->emailstop ? get_string('yes') : get_string('no');
     }
 
     public function col_suspended($row) {
