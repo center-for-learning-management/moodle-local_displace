@@ -46,7 +46,17 @@ class table extends table_sql {
             'userpic' => get_string('userpic'),
             'firstname' => get_string('firstname'),
             'lastname' => get_string('lastname'),
+            'username' => get_string('username'),
+            'idnumber' => get_string('idnumber'),
+            'lang' => get_string('lang'),
             'email' => get_string('email'),
+            'emailstop' => get_string('emailstop'),
+            'auth' => get_string('auth'),
+            'confirmed' => get_string('confirmed'),
+            'policyagreed' => get_string('policyagreed'),
+            'deleted' => get_string('deleted'),
+            'suspended' => get_string('suspended'),
+            'firstaccess' => get_string('firstaccess'),
             'lastaccess' => get_string('lastaccess'),
             'actions' => get_string('actions'),
         ];
@@ -59,7 +69,19 @@ class table extends table_sql {
         $this->no_filter('userpic');
         $this->no_sorting('actions');
         $this->no_filter('actions');
+        $this->no_filter('firstaccess');
         $this->no_filter('lastaccess');
+
+        $yesno = [ 'confirmed', 'deleted', 'emailstop', 'policyagreed', 'suspended' ];
+        foreach ($yesno as $field) {
+            $this->set_column_options($field,
+                sql_column: $field,
+                select_options: [
+                    ['text' => get_string('yes'), 'value' => 1],
+                    ['text' => get_string('no'), 'value' => 0],
+                ]
+            );
+        }
     }
 
     public function col_userpic($row) {
@@ -97,12 +119,14 @@ class table extends table_sql {
         require_once("$CFG->dirroot/lib/moodlelib.php");
         $buttons = [];
         if (has_capability('moodle/user:update', \context_system::instance())) {
-            $params = (object) [
-                'icon' => 'fa fa-edit',
-                'label' => get_string('edit'),
-                'url' => new \moodle_url('/user/editadvanced.php', [ 'id' => $row->id ]),
-            ];
-            $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
+            if (!$row->deleted) {
+                $params = (object)[
+                    'icon' => 'fa fa-edit',
+                    'label' => get_string('edit'),
+                    'url' => new \moodle_url('/user/editadvanced.php', ['id' => $row->id]),
+                ];
+                $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
+            }
             if ($row->suspended) {
                 $params = (object) [
                     'icon' => 'fa fa-eye-slash',
