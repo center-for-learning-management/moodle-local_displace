@@ -46,7 +46,16 @@ class table extends table_sql {
             'userpic' => get_string('userpic'),
             'firstname' => get_string('firstname'),
             'lastname' => get_string('lastname'),
+            'username' => get_string('username'),
+            'idnumber' => get_string('idnumber'),
+            'lang' => get_string('language'),
             'email' => get_string('email'),
+            'emailstop' => get_string('emailstop'),
+            'auth' => get_string('authentication'),
+            'confirmed' => ucfirst(get_string('confirmed')),
+            'deleted' => ucfirst(get_string('deleted')),
+            'suspended' => ucfirst(get_string('suspended')),
+            'firstaccess' => get_string('firstaccess'),
             'lastaccess' => get_string('lastaccess'),
             'actions' => get_string('actions'),
         ];
@@ -59,7 +68,19 @@ class table extends table_sql {
         $this->no_filter('userpic');
         $this->no_sorting('actions');
         $this->no_filter('actions');
+        $this->no_filter('firstaccess');
         $this->no_filter('lastaccess');
+
+        $yesno = [ 'confirmed', 'deleted', 'emailstop', 'suspended' ];
+        foreach ($yesno as $field) {
+            $this->set_column_options($field,
+                sql_column: $field,
+                select_options: [
+                    ['text' => get_string('yes'), 'value' => 1],
+                    ['text' => get_string('no'), 'value' => 0],
+                ]
+            );
+        }
     }
 
     public function col_userpic($row) {
@@ -83,6 +104,14 @@ class table extends table_sql {
         return "<a href=\"mailto:{$row->email}\">{$row->email}</a>";
     }
 
+    public function col_firstaccess($row) {
+        if ($row->lastaccess) {
+            return format_time(time() - $row->lastaccess);
+        } else {
+            return get_string('never');
+        }
+    }
+
     public function col_lastaccess($row) {
         if ($row->lastaccess) {
             return format_time(time() - $row->lastaccess);
@@ -91,18 +120,37 @@ class table extends table_sql {
         }
     }
 
+    public function col_confirmed($row) {
+        return $row->confirmed ? get_string('yes') : get_string('no');
+    }
+
+    public function col_deleted($row) {
+        return $row->deleted ? get_string('yes') : get_string('no');
+    }
+
+    public function col_emailstop($row) {
+        return $row->emailstop ? get_string('yes') : get_string('no');
+    }
+
+    public function col_suspended($row) {
+        return $row->suspended ? get_string('yes') : get_string('no');
+    }
+
+
     public function col_actions($row) {
         global $CFG, $OUTPUT, $PAGE, $USER;
         require_once("$CFG->dirroot/lib/authlib.php");
         require_once("$CFG->dirroot/lib/moodlelib.php");
         $buttons = [];
         if (has_capability('moodle/user:update', \context_system::instance())) {
-            $params = (object) [
-                'icon' => 'fa fa-edit',
-                'label' => get_string('edit'),
-                'url' => new \moodle_url('/user/editadvanced.php', [ 'id' => $row->id ]),
-            ];
-            $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
+            if (!$row->deleted) {
+                $params = (object)[
+                    'icon' => 'fa fa-edit',
+                    'label' => get_string('edit'),
+                    'url' => new \moodle_url('/user/editadvanced.php', ['id' => $row->id]),
+                ];
+                $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
+            }
             if ($row->suspended) {
                 $params = (object) [
                     'icon' => 'fa fa-eye-slash',
