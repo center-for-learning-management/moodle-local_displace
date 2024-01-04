@@ -48,14 +48,13 @@ class table extends table_sql {
             'lastname' => get_string('lastname'),
             'username' => get_string('username'),
             'idnumber' => get_string('idnumber'),
-            'lang' => get_string('lang'),
+            'lang' => get_string('language'),
             'email' => get_string('email'),
             'emailstop' => get_string('emailstop'),
-            'auth' => get_string('auth'),
-            'confirmed' => get_string('confirmed'),
-            'policyagreed' => get_string('policyagreed'),
-            'deleted' => get_string('deleted'),
-            'suspended' => get_string('suspended'),
+            'auth' => get_string('authentication'),
+            'confirmed' => ucfirst(get_string('confirmed')),
+            'deleted' => ucfirst(get_string('deleted')),
+            'suspended' => ucfirst(get_string('suspended')),
             'firstaccess' => get_string('firstaccess'),
             'lastaccess' => get_string('lastaccess'),
             'actions' => get_string('actions'),
@@ -72,7 +71,7 @@ class table extends table_sql {
         $this->no_filter('firstaccess');
         $this->no_filter('lastaccess');
 
-        $yesno = [ 'confirmed', 'deleted', 'emailstop', 'policyagreed', 'suspended' ];
+        $yesno = [ 'confirmed', 'deleted', 'emailstop', 'suspended' ];
         foreach ($yesno as $field) {
             $this->set_column_options($field,
                 sql_column: $field,
@@ -112,6 +111,19 @@ class table extends table_sql {
             return get_string('never');
         }
     }
+
+    public function col_confirmed($row) {
+        return $row->confirmed ? get_string('yes') : get_string('no');
+    }
+
+    public function col_deleted($row) {
+        return $row->deleted ? get_string('yes') : get_string('no');
+    }
+
+    public function col_suspended($row) {
+        return $row->suspended ? get_string('yes') : get_string('no');
+    }
+
 
     public function col_actions($row) {
         global $CFG, $OUTPUT, $PAGE, $USER;
