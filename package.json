@@ -1,0 +1,8 @@
+{
+    "name": "moodle-local_displace",
+    "eslintConfig": {
+        "rules": {
+            "no-console": "off"
+        }
+    }
+}

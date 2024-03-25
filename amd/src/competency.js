@@ -11,7 +11,9 @@ define(
          */
         competencyAddSingle: function(a) {
             let C = this;
-            if (C.debug) console.log('Add single', a);
+            if (C.debug) {
+                console.log('Add single', a);
+            }
 
             let courseid = $(a).closest('table').attr('data-courseid');
             let id = $(a).closest('tr').attr('data-id');
@@ -34,7 +36,9 @@ define(
             let id = tr.attr('data-id');
             let children = tr.closest('table').find('tr.childof-' + id);
             if (children.length > 0) {
-                if (C.debug) console.log('children', children);
+                if (C.debug) {
+                    console.log('children', children);
+                }
                 let isused = children.first().hasClass('used');
                 if (!isused) {
                     children.each(function() {
@@ -90,7 +94,9 @@ define(
                     }
                 ).fail(Notification.exception);
             } else {
-                if (C.debug) console.log('Remove single', a);
+                if (C.debug) {
+                    console.log('Remove single', a);
+                }
                 let courseid = $(a).closest('table').attr('data-courseid');
                 let id = $(a).closest('tr').attr('data-id');
                 let method = 'core_competency_remove_competency_from_course';
@@ -112,7 +118,9 @@ define(
                 return;
             }
             let item = C.queue.shift();
-            if (C.debug) console.log('Queue Item', item);
+            if (C.debug) {
+                console.log('Queue Item', item);
+            }
             C.queueActiveItem = true;
             Ajax.call([{
                 methodname: item.methodname,
@@ -177,7 +185,7 @@ define(
                 {methodname: 'tool_lp_data_for_course_competencies_page',
                   args: {courseid: $(select).closest('table').attr('data-courseid'), moduleid: 0}}
             ]);
-            requests[1].then(function(context) {
+            requests[1].then(function() {
                 $(select).addClass('displace-alert success');
                 setTimeout(
                     function(){
