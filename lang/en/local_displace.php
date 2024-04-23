@@ -25,6 +25,9 @@ $string['cachedef_application'] = 'Applicationcache for local_displace';
 $string['cachedef_request'] = 'Requestcache for local_displace';
 $string['cachedef_session'] = 'Sessioncache for local_displace';
 
+$string['admin:user:setting'] = 'User list';
+$string['admin:user:setting:enabled'] = 'Enable this displacement';
+
 $string['competency:remove:title'] = 'Remove competency';
 $string['competency:remove:multiple'] = 'Attention, in case you remove a competency from a course, students progress may be removed as well. Do you really want to remove all competencies within "<i>{$a->shortname}</i>" from this course?';
 $string['competency:remove:single'] = 'Attention, in case you remove a competency from a course, students progress may be removed as well. Do you really want to remove "<i>{$a->shortname}</i>" from this course?';

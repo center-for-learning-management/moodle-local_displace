@@ -32,6 +32,9 @@ if ($hassiteconfig) {
         )
     );
 
+    require_once(__DIR__ . "/admin/user/settings.php");
+    \local_displace\admin\user\settings::admin_settings_page();
+
     require_once(__DIR__ . "/competency/settings.php");
     \local_displace\competency\settings::admin_settings_page();
 

@@ -16,18 +16,22 @@
 
 /**
  * @package   local_displace
- * @copyright 2022 Zentrum für Lernmanagement (www.lernmanagement.at)
+ * @copyright 2023 Austrian Federal Ministry of Education
  * @author    Robert Schrenk
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2023102700;
-$plugin->requires = 2018051700;
-$plugin->component = 'local_displace';
-$plugin->release = '0.3';
-$plugin->maturity = MATURITY_STABLE;
-$plugin->dependencies = [
-    'local_table_sql' => 2023102300,
-];
+$handle_if_given = [ 'confirm', 'confirmuser', 'delete', 'suspend', 'unsuspend', 'unlock', 'resendemail' ];
+$handle_prevent = false;
+foreach ($handle_if_given as $hig) {
+    if (!empty(optional_param($hig, '', PARAM_TEXT))) {
+        $handle_prevent = true;
+    }
+}
+if (!$handle_prevent) {
+    $url = "/local/displace/admin/user/user.php?" . $_SERVER['QUERY_STRING'];
+    redirect($url);
+}

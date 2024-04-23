@@ -33,6 +33,11 @@ function local_displace_after_config() {
         str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']));
 
     switch ($subpath) {
+        case "/admin/user.php":
+            if (!empty(get_config('local_displace', 'admin_user_enabled'))) {
+                include("{$CFG->dirroot}/local/displace/admin/user/redirect.php");
+            }
+        break;
         case "/admin/tool/lp/coursecompetencies.php":
             if (!empty(get_config('local_displace', 'competency_enabled'))) {
                 $url = "/local/displace/competency/coursecompetencies.php?" . $_SERVER['QUERY_STRING'];

@@ -28,7 +28,7 @@ $categoryid = optional_param('categoryid', 0, PARAM_INT);
 
 $topcategory = (object)[
     'id' => 0,
-    'name' => $CFG->fullname,
+    'name' => !empty($CFG->fullname) ? $CFG->fullname : 'root',
     'parent' => -1,
     'path' => '/',
 ];
@@ -69,17 +69,14 @@ if (!empty($category->id)) {
 $categories = $DB->get_records('course_categories', ['parent' => $category->id], 'name ASC');
 $courses = $DB->get_records('course', ['category' => $category->id], 'fullname ASC');
 
-if (!empty($category->parent)) {
-    $parent = $DB->get_record('course_categories', ['id' => $category->parent]);
-} else {
-    $parent = $topcategory;
+foreach ($categories as $category) {
+    $ctx = \context_coursecat::instance($category->id);
+    $category->contextid = $ctx->id;
 }
 
 $params = [
-    'CFG' => $CFG,
     'categories' => array_values($categories),
     'courses' => array_values($courses),
-    'parent' => $parent,
 ];
 
 echo $OUTPUT->header();
