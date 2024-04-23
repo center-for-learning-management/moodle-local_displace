@@ -31,7 +31,7 @@ class locallib {
      * @param path the path to load.
      * @param tree the array to attach items to.
      * @param depth the depth.
-    **/
+     **/
     public static function build_competency_list($frameworkid, $path, $depth = []) {
         global $courseid, $DB;
 
@@ -42,7 +42,7 @@ class locallib {
                     WHERE competencyframeworkid = ?
                         AND path = ?
                     ORDER BY shortname ASC";
-        $params = [ $frameworkid, $path ];
+        $params = [$frameworkid, $path];
         $competencies = $DB->get_records_sql($sql, $params);
         $list = [];
         foreach ($competencies as &$item) {
@@ -55,7 +55,7 @@ class locallib {
             $subpath = $path . $item->id . "/";
             $item->depth = $depth;
 
-            $used = $DB->get_record('competency_coursecomp', [ 'courseid' => $courseid, 'id' => $item->id ]);
+            $used = $DB->get_record('competency_coursecomp', ['courseid' => $courseid, 'id' => $item->id]);
             $item->isused = (!empty($used->id)) ? 1 : 0;
             $sublist = self::build_competency_list($frameworkid, $subpath, json_decode(json_encode($depth)));
             $item->haschildren = count($sublist) > 0 ? 1 : 0;
@@ -65,15 +65,17 @@ class locallib {
 
         return $list;
     }
+
     /**
      * Load the competency-tree of a framework.
      * @param frameworkid the id of the framework.
      * @param path the path to load.
      * @param tree the array to attach items to.
      * @param depth the depth.
-    **/
+     **/
     public static function build_competency_tree($frameworkid, $path, $tree = false, $depth = 0) {
-        if (!$tree) $tree = (object) [];
+        if (!$tree)
+            $tree = (object)[];
         global $courseid, $DB;
 
         $sql = "SELECT *
@@ -81,7 +83,7 @@ class locallib {
                     WHERE competencyframeworkid = ?
                         AND path = ?
                     ORDER BY shortname ASC";
-        $params = [ $frameworkid, $path ];
+        $params = [$frameworkid, $path];
         $tree->competencies = array_values($DB->get_records_sql($sql, $params));
         foreach ($tree->competencies as &$item) {
             if ($path != '/0/') {
@@ -93,7 +95,7 @@ class locallib {
             $subpath = $path . $item->id . "/";
             $item->depth = $depth;
 
-            $used = $DB->get_record('competency_coursecomp', [ 'courseid' => $courseid, 'id' => $item->id ]);
+            $used = $DB->get_record('competency_coursecomp', ['courseid' => $courseid, 'id' => $item->id]);
             $item->isused = (!empty($used->id)) ? 1 : 0;
 
             self::build_competency_tree($frameworkid, $subpath, $item, $depth + 1);

@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    local_displace
- * @copyright  2022 Zentrum für Lernmanagement (www.lernmanagement.at)
- * @author     Robert Schrenk
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   local_displace
+ * @copyright 2022 Zentrum für Lernmanagement (www.lernmanagement.at)
+ * @author    Robert Schrenk
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once('../../../config.php');
@@ -26,7 +26,7 @@ require_login();
 
 $categoryid = optional_param('categoryid', 0, PARAM_INT);
 
-$topcategory = (object) [
+$topcategory = (object)[
     'id' => 0,
     'name' => !empty($CFG->fullname) ? $CFG->fullname : 'root',
     'parent' => -1,
@@ -34,7 +34,7 @@ $topcategory = (object) [
 ];
 
 if (!empty($categoryid)) {
-    $category = $DB->get_record('course_categories', [ 'id' => $categoryid ], '*', MUST_EXIST);
+    $category = $DB->get_record('course_categories', ['id' => $categoryid], '*', MUST_EXIST);
 } else {
     $category = $topcategory;
 }
@@ -46,10 +46,10 @@ $PAGE->set_url('/local/displace/coursecat/management.php', $urlparams);
 $PAGE->set_title($category->name);
 $PAGE->set_heading($category->name);
 
-$ccurl = new \moodle_url('/admin/search.php', [ ]);
+$ccurl = new \moodle_url('/admin/search.php', []);
 $PAGE->navbar->add(get_string('administrationsite'), $ccurl);
 
-$ccurl = new \moodle_url('admin/category.php', [ 'category' => 'courses']);
+$ccurl = new \moodle_url('admin/category.php', ['category' => 'courses']);
 $PAGE->navbar->add(get_string('courses', 'core'), $ccurl);
 
 $ccurl = new \moodle_url('/local/displace/coursecat/management.php', []);
@@ -66,8 +66,8 @@ if (!empty($category->id)) {
     }
 }
 
-$categories = $DB->get_records('course_categories', [ 'parent' => $category->id], 'name ASC');
-$courses = $DB->get_records('course', [ 'category' => $category->id], 'fullname ASC');
+$categories = $DB->get_records('course_categories', ['parent' => $category->id], 'name ASC');
+$courses = $DB->get_records('course', ['category' => $category->id], 'fullname ASC');
 
 foreach ($categories as $category) {
     $ctx = \context_coursecat::instance($category->id);
