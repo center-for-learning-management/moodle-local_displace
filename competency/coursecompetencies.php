@@ -54,13 +54,13 @@ $sql = "SELECT *
             WHERE c.id = ccc.competencyid
                 AND ccc.courseid = ?
             ORDER BY c.shortname ASC";
-$params = [ $course->id ];
+$params = [$course->id];
 $coursecomps = $DB->get_records_sql($sql, $params);
 
 $ruleoutcomelist = \core_competency\course_competency::get_ruleoutcome_list();
 $ruleoutcomeoptions = [];
 foreach ($ruleoutcomelist as $value => $text) {
-    $ruleoutcomeoptions[$value] = array('value' => $value, 'text' => (string) $text, 'selected' => false);
+    $ruleoutcomeoptions[$value] = array('value' => $value, 'text' => (string)$text, 'selected' => false);
 }
 
 $frameworks = [];
@@ -68,7 +68,7 @@ $pathcomp = [];
 $fastmodinfo = get_fast_modinfo($course->id);
 foreach ($coursecomps as &$coursecomp) {
     if (empty($frameworks[$coursecomp->competencyframeworkid])) {
-        $params = [ 'id' => $coursecomp->competencyframeworkid ];
+        $params = ['id' => $coursecomp->competencyframeworkid];
         $frameworks[$coursecomp->competencyframeworkid] =
             $DB->get_record('competency_framework', $params);
     }
@@ -76,14 +76,14 @@ foreach ($coursecomps as &$coursecomp) {
         $coursecomp->framework = $frameworks[$coursecomp->competencyframeworkid];
     }
 
-    $coursecomp->ruleoutcomeoptions = (array) (object) $ruleoutcomeoptions;
+    $coursecomp->ruleoutcomeoptions = (array)(object)$ruleoutcomeoptions;
     $coursecomp->ruleoutcomeoptions[$coursecomp->ruleoutcome]['selected'] = true;
 
     $coursemodules = \core_competency\api::list_course_modules_using_competency($coursecomp->competencyid, $course->id);
     $coursecomp->coursemodules = [];
     foreach ($coursemodules as $cmid) {
         $cminfo = $fastmodinfo->cms[$cmid];
-        $coursecomp->coursemodules[] = (object) [
+        $coursecomp->coursemodules[] = (object)[
             'iconurl' => $OUTPUT->image_url('icon', $cminfo->modname),
             'name' => $cminfo->name,
             'url' => (!empty($cminfo->url) ? $cminfo->url->__toString() : ''),
@@ -96,10 +96,10 @@ foreach ($coursecomps as &$coursecomp) {
     for ($a = 0; $a < count($path); $a++) {
         $compid = $path[$a];
         if (empty($pathcomp[$compid])) {
-            $pathcomp[$compid] = $DB->get_record('competency', [ 'id' => $compid]);
+            $pathcomp[$compid] = $DB->get_record('competency', ['id' => $compid]);
         }
         if (!empty($pathcomp[$compid])) {
-            $coursecomp->_path[] = (object) [
+            $coursecomp->_path[] = (object)[
                 'competency' => 1,
                 'id' => $pathcomp[$compid]->id,
                 'shortname' => $pathcomp[$compid]->shortname,
@@ -112,8 +112,8 @@ $params = [
     'cancoursecompetencyconfigure' => $coursecompetencyconfigure,
     'canmanagecoursecompetencies' => $canmanagecoursecompetencies,
     'competencies' => array_values($coursecomps),
-    'courseid'     => $course->id,
-    'wwwroot'      => $CFG->wwwroot,
+    'courseid' => $course->id,
+    'wwwroot' => $CFG->wwwroot,
 ];
 
 echo $OUTPUT->header();

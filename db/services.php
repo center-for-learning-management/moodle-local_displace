@@ -25,12 +25,4 @@ defined('MOODLE_INTERNAL') || die;
 
 // We define the web service functions to install.
 $functions = array(
-    'local_displace_coursecat_get_category' => array(
-        'classname'   => '\local_displace\coursecat\externallib',
-        'methodname'  => 'get_category',
-        'classpath'   => 'local/displace/coursecat/externallib.php',
-        'description' => 'Get the content of a course category.',
-        'type'        => 'read',
-        'ajax'        => 1,
-    ),
 );
