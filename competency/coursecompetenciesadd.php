@@ -41,7 +41,7 @@ $PAGE->set_title($course->fullname);
 $PAGE->set_heading($course->fullname);
 $PAGE->requires->css('/local/displace/style/competency.css');
 
-$ccurl = new \moodle_url('/local/displace/competency/coursecompetencies.php', [ 'courseid' => $course->id]);
+$ccurl = new \moodle_url('/local/displace/competency/coursecompetencies.php', ['courseid' => $course->id]);
 $PAGE->navbar->add(get_string('coursecompetencies', 'tool_lp'), $ccurl);
 $PAGE->navbar->add(get_string('addcoursecompetencies', 'tool_lp'), $PAGE->url);
 
@@ -49,7 +49,7 @@ $sql = "SELECT DISTINCT(c.id) id
             FROM {competency} c, {competency_coursecomp} ccc
             WHERE c.id = ccc.competencyid
                 AND ccc.courseid = ?";
-$params = [ $course->id ];
+$params = [$course->id];
 $usedids = array_keys($DB->get_records_sql($sql, $params));
 
 $path = explode('/', $coursecontext->path);
@@ -78,16 +78,16 @@ $competencytree = \local_displace\competency\locallib::build_competency_list($fr
 //print_r($competencytree);die();
 $params = [
     'competencies' => $competencytree,
-    'courseid'     => $course->id,
-    'frameworks'   => $frameworks,
-    'wwwroot'      => $CFG->wwwroot,
+    'courseid' => $course->id,
+    'frameworks' => $frameworks,
+    'wwwroot' => $CFG->wwwroot,
 ];
 
 $canselect = get_config('local_displace', 'competency_canselect');
 $canselectall = get_config('local_displace', 'competency_canselectall');
 
 $uses_komet = get_config('local_komettranslator', 'version');
-$komet_types = [ 'subject', 'topic', 'descriptor' ];
+$komet_types = ['subject', 'topic', 'descriptor'];
 
 foreach ($competencytree as $competency) {
     if (in_array($competency->id, $usedids)) {
@@ -98,7 +98,8 @@ foreach ($competencytree as $competency) {
     if (!empty($uses_komet)) {
         foreach ($komet_types as $komet_type) {
             $usedbykomet = \local_komettranslator\locallib::mapping_internal($komet_type, $competency->id);
-            if (!empty($usedbykomet->id)) break;
+            if (!empty($usedbykomet->id))
+                break;
         }
     }
 
@@ -116,19 +117,19 @@ $params['btnaddmultiple'] = implode("", array(
     "var a = this;",
     "require(['local_displace/competency'], function (C) {",
     "    C.competencyAddMultiple(a);",
-    "}); return false;"
+    "}); return false;",
 ));
 $params['btnaddsingle'] = implode("", array(
     "var a = this;",
     "require(['local_displace/competency'], function (C) {",
     "    C.competencyAddSingle(a);",
-    "}); return false;"
+    "}); return false;",
 ));
 $params['btnremovesingle'] = implode("", array(
     "var a = this;",
     "require(['local_displace/competency'], function (C) {",
     "    C.competencyRemoveSingle(a);",
-    "}); return false;"
+    "}); return false;",
 ));
 //print_r($competencytree);die();
 echo $OUTPUT->header();
