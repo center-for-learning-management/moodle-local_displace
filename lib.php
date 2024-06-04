@@ -50,6 +50,12 @@ function local_displace_after_config() {
                 redirect($url);
             }
         break;
+        case "$CFG->dirroot/message/output/popup/mark_notification_read.php":
+            if (!empty(get_config('local_displace', 'notifications_enabled'))) {
+                $url = "/local/displace/notifications/mark_notification_read.php?" . $_SERVER['QUERY_STRING'];
+                redirect($url);
+            }
+        break;
     }
 }
 

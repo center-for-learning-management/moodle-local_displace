@@ -41,6 +41,10 @@ $string['coursecat:setting'] = 'Kursbereiche';
 $string['coursecat:setting:description'] = 'Ersetze die Kursbereichsverwaltung';
 $string['coursecat:setting:enabled'] = 'Aktiviere diese Ersetzung';
 
+$string['notifications:setting'] = 'Notifications Verknüpfung';
+$string['notifications:setting:description'] = 'Leiten Sie den Benutzer immer auf die Seite "Vollständige Meldung lesen" um, anstatt auf die Kontext-URL.';
+$string['notifications:setting:enabled'] = 'Aktiviere diese Ersetzung';
+
 $string['pluginname'] = 'Displace';
 $string['privacy:metadata'] = 'Es werden in diesem Plugin keine personenbezogenen Daten gespeichert.';
 
