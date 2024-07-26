@@ -45,7 +45,15 @@ class settings {
                 '',
                 PARAM_INT
             )
-        );
 
+            $settings->add(
+                new \admin_setting_configcheckbox(
+                    'local_displace/coursecat_restrict_to_admin',
+                    get_string('coursecat:setting:restrict_to_admin', 'local_displace'),
+                    '',
+                    '',
+                    PARAM_INT
+                )
+        );
     }
 }

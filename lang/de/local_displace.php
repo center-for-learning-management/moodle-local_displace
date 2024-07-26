@@ -40,6 +40,7 @@ $string['competency:setting:enabled'] = 'Aktiviere diese Ersetzung';
 $string['coursecat:setting'] = 'Kursbereiche';
 $string['coursecat:setting:description'] = 'Ersetze die Kursbereichsverwaltung';
 $string['coursecat:setting:enabled'] = 'Aktiviere diese Ersetzung';
+$string['coursecat:setting:restrict_to_admin'] = 'Umleitung nur für Administrator/innen';
 
 $string['notifications:setting'] = 'Notifications Verknüpfung';
 $string['notifications:setting:description'] = 'Leiten Sie den Benutzer immer auf die Seite "Vollständige Meldung lesen" um, anstatt auf die Kontext-URL.';

@@ -43,6 +43,7 @@ $string['competency:setting:enabled'] = 'Enable this displacement';
 $string['coursecat:setting'] = 'Course Categories';
 $string['coursecat:setting:description'] = 'Displace the course management page';
 $string['coursecat:setting:enabled'] = 'Enable this displacement';
+$string['coursecat:setting:restrict_to_admin'] = 'Only redirect for admin users';
 
 $string['notifications:setting'] = 'Notifications Link';
 $string['notifications:setting:description'] = 'Always redirect the user to the "read full notification"-page instead of the context-url.';
