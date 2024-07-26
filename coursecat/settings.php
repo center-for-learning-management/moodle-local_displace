@@ -49,8 +49,18 @@ class settings {
 
         $settings->add(
             new \admin_setting_configcheckbox(
-                'local_displace/coursecat_restrict_to_admin',
-                get_string('coursecat:setting:restrict_to_admin', 'local_displace'),
+                'local_displace/coursecat_enabled_admin',
+                get_string('coursecat:setting:enabled_admin', 'local_displace'),
+                '',
+                '',
+                PARAM_INT
+            )
+        );
+
+        $settings->add(
+            new \admin_setting_configcheckbox(
+                'local_displace/coursecat_enabled_user',
+                get_string('coursecat:setting:enabled_user', 'local_displace'),
                 '',
                 '',
                 PARAM_INT
