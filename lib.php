@@ -55,7 +55,7 @@ function local_displace_after_config() {
                 !empty(get_config('local_displace', 'coursecat_enabled'))
                 && (
                     empty(get_config('local_displace', 'coursecat_restrict_to_admin'))
-                    || !is_siteadmin()
+                    || is_siteadmin()
                 )
             ) {
                 $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
