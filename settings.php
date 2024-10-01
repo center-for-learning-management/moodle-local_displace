@@ -41,6 +41,9 @@ if ($hassiteconfig) {
     require_once(__DIR__ . "/coursecat/settings.php");
     \local_displace\coursecat\settings::admin_settings_page();
 
+    require_once(__DIR__ . "/notifications/settings.php");
+    \local_displace\notifications\settings::admin_settings_page();
+
     require_once(__DIR__ . "/question/settings.php");
     \local_displace\question\settings::admin_settings_page();
 }

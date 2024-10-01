@@ -52,10 +52,21 @@ function local_displace_after_config() {
             break;
         case "/course/management.php":
             if (!empty(get_config('local_displace', 'coursecat_enabled'))) {
-                $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
+                if (
+                    (is_siteadmin() && !empty(get_config('local_displace', 'coursecat_enabled_admin')))
+                    || (is_siteadmin() && !empty(get_config('local_displace', 'coursecat_enabled_user')))
+                ) {
+                    $url = "/local/displace/coursecat/management.php?" . $_SERVER['QUERY_STRING'];
+                    redirect($url);
+                }
+            }
+        break;
+        case "/message/output/popup/mark_notification_read.php":
+            if (!empty(get_config('local_displace', 'notifications_enabled'))) {
+                $url = "/local/displace/notifications/mark_notification_read.php?" . $_SERVER['QUERY_STRING'];
                 redirect($url);
             }
-            break;
+        break;
     }
 }
 

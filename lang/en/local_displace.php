@@ -43,6 +43,12 @@ $string['competency:setting:enabled'] = 'Enable this displacement';
 $string['coursecat:setting'] = 'Course Categories';
 $string['coursecat:setting:description'] = 'Displace the course management page';
 $string['coursecat:setting:enabled'] = 'Enable this displacement';
+$string['coursecat:setting:enabled_admin'] = 'Redirect admin users';
+$string['coursecat:setting:enabled_user'] = 'Redirect ordinary users';
+
+$string['notifications:setting'] = 'Notifications Link';
+$string['notifications:setting:description'] = 'Always redirect the user to the "read full notification"-page instead of the context-url.';
+$string['notifications:setting:enabled'] = 'Enable this displacement';
 
 $string['pluginname'] = 'Displace';
 $string['privacy:metadata'] = 'No personal data is stored with this plugin.';
