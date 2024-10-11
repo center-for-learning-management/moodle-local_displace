@@ -35,15 +35,16 @@ class table extends table_sql {
      */
     protected function define_table_configs() {
         global $DB;
-
+        $fullname = $DB->sql_fullname();
         $this->set_sql(
-            '*',
+            "*,{$fullname} as realname",
             '{user}'
         );
 
         // Define headers and columns.
         $cols = [
             'userpic' => get_string('userpic'),
+            'realname' => get_string('fullname'),
             'firstname' => get_string('firstname'),
             'lastname' => get_string('lastname'),
             'username' => get_string('username'),
@@ -61,6 +62,18 @@ class table extends table_sql {
         ];
 
         $this->set_table_columns($cols);
+        $moodlecols = array_map('trim', explode(',', get_config('core', 'userfiltersdefault')));
+        // Add cols that should always be shown.
+        $moodlecols[] = 'actions';
+        $moodlecols[] = 'userpic';
+        // Now calculate the hidden cols.
+        $hiddencols = [];
+        foreach ($cols as $colname => $collabel) {
+            if (!in_array($colname, $moodlecols)) {
+                $hiddencols[] = $colname;
+            }
+        }
+        $this->set_hidden_columns($hiddencols);
 
         $this->collapsible(false);
         $this->sortable(true, 'lastname', SORT_ASC);
@@ -106,7 +119,7 @@ class table extends table_sql {
 
     public function col_firstaccess($row) {
         if ($row->lastaccess) {
-            return format_time(time() - $row->lastaccess);
+            return format_time(time() - $row->firstaccess);
         } else {
             return get_string('never');
         }
@@ -170,6 +183,14 @@ class table extends table_sql {
                     $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
                 }
             }
+            if (\login_is_lockedout($row)) {
+                $params = (object) [
+                    'icon' => 'fa fa-unlock',
+                    'label' => get_string('unlockaccount', 'admin'),
+                    'url' => new \moodle_url('/admin/user.php', [ 'unlock' => $row->id, 'sesskey' => sesskey() ]),
+                ];
+                $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
+            }
         }
 
         if (has_capability('moodle/user:delete', \context_system::instance())) {
@@ -183,14 +204,6 @@ class table extends table_sql {
                 ];
                 $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
             }
-        }
-        if (\login_is_lockedout($row)) {
-            $params = (object) [
-                'icon' => 'fa fa-unlock',
-                'label' => get_string('unlockaccount', 'admin'),
-                'url' => new \moodle_url('/admin/user.php', [ 'unlock' => $row->id, 'sesskey' => sesskey() ]),
-            ];
-            $buttons[] = $OUTPUT->render_from_template('local_displace/link', $params);
         }
         return implode(" ", $buttons);
     }

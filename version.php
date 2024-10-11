@@ -23,7 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-$plugin->version  = 2024060400;
+$plugin->version  = 2024101000;
 $plugin->requires = 2018051700;
 $plugin->component = 'local_displace';
 $plugin->release = '0.3';
