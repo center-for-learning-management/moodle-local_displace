@@ -28,6 +28,7 @@ $string['cachedef_session'] = 'Sessioncache für local_displace';
 $string['competency:remove:title'] = 'Kompetenz entfernen';
 $string['competency:remove:multiple'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher alle Kompetenzen innerhalb von "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';
 $string['competency:remove:single'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher die Kompetenz "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';
+$string['competency:loading_framework'] = 'Lade {$a} ...';
 
 $string['competency:setting'] = 'Kompetenzen';
 $string['competency:setting:canselect'] = 'Tiefe für Einzelauswahl';

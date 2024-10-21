@@ -49,7 +49,7 @@ function competencyAddSingle(a) {
  * to/from a course.
  * @param {DOMElement} a sender of the event.
  */
-function competencyAddMultiple(a) {
+async function competencyAddMultiple(a) {
   // Get the first child to decide if we
   // add or remove.
   let tr = $(a).closest('tr');
@@ -78,17 +78,17 @@ function competencyAddMultiple(a) {
         removeNow();
       } else {
         let shortname = $(a).closest('tr').find('.shortname').html();
-        Str.get_strings([
+        const s = await get_strings([
           {'key': 'competency:remove:title', component: 'local_displace'},
           {'key': 'competency:remove:multiple', component: 'local_displace', param: {'shortname': shortname}},
           {'key': 'yes'},
           {'key': 'no'}
-        ]).done(function (s) {
-          Notification.confirm(
-            s[0], s[1], s[2], s[3],
-            removeNow
-          );
-        }).fail(Notification.exception);
+        ]);
+
+        Notification.confirm(
+          s[0], s[1], s[2], s[3],
+          removeNow
+        );
       }
     }
 
@@ -101,9 +101,9 @@ function competencyAddMultiple(a) {
 /**
  * Remove a single competency from a course.
  * @param {DOMElement} a sender of the event.
- * @param {bool} confirmed if the user confirmed the action.
+ * @param {boolean} confirmed if the user confirmed the action.
  */
-function competencyRemoveSingle(a, confirmed) {
+async function competencyRemoveSingle(a, confirmed) {
   if (useSessionCompetencies) {
     let id = $(a).closest('tr').attr('data-id');
 
@@ -115,20 +115,19 @@ function competencyRemoveSingle(a, confirmed) {
 
   if (typeof confirmed === 'undefined') {
     var shortname = $(a).closest('tr').find('.shortname').html();
-    Str.get_strings([
+    const s = await get_strings([
       {'key': 'competency:remove:title', component: 'local_displace'},
       {'key': 'competency:remove:single', component: 'local_displace', param: {'shortname': shortname}},
       {'key': 'yes'},
       {'key': 'no'}
-    ]).done(function (s) {
-        Notification.confirm(
-          s[0], s[1], s[2], s[3],
-          function () {
-            competencyRemoveSingle(a, true);
-          }
-        );
+    ]);
+
+    Notification.confirm(
+      s[0], s[1], s[2], s[3],
+      function () {
+        competencyRemoveSingle(a, true);
       }
-    ).fail(Notification.exception);
+    );
   } else {
     if (debug) {
       console.log('Remove single', a);
@@ -227,7 +226,7 @@ function getCurrentTable() {
   return $('.coursecompetenciesadd_framework:visible').first();
 }
 
-function loadSelectedFramework() {
+async function loadSelectedFramework() {
   var $select = $('.coursecompetenciesadd select[name="frameworkid"]');
   var selectedText = $select.find("option:selected").text();
 
@@ -236,11 +235,15 @@ function loadSelectedFramework() {
   // hide all other frameworks
   $('#local_displace-framework-container').children().hide();
 
+  const s = await get_strings([
+    {key: 'competency:loading_framework', component: 'local_displace', param: selectedText}
+  ]);
+
   if ($existingFramework.length) {
     $existingFramework.show();
   } else {
     // Loading info table
-    var $loadingInfoTable = $('<div class="coursecompetenciesadd_framework" data-frameworkid="' + $select.val() + '">Lade ' + selectedText + '...</div>');
+    var $loadingInfoTable = $('<div class="coursecompetenciesadd_framework" data-frameworkid="' + $select.val() + '">' + s[0] + '</div>');
     $loadingInfoTable.appendTo('#local_displace-framework-container');
 
     $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + $select.val()).then(ret => {
@@ -254,6 +257,17 @@ function loadSelectedFramework() {
     });
   }
   // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
+}
+
+async function get_strings(requests) {
+  return Str.get_strings(requests).then(strings => {
+    var result = {};
+    requests.forEach((str, i) => {
+      result[i] = strings[i]; // backwards compatible
+      result[str.key] = strings[i];
+    });
+    return result;
+  });
 }
 
 /**
@@ -376,20 +390,24 @@ function initTable($table) {
   });
 
   // handle toggle click
-  $table.find('tr.has-children .toggler').click(function () {
+  $table.find('tr.has-children .toggler').click(function (e) {
+    e.preventDefault();
     toggleNode(this, null, true);
   })
 
   // handle other events
-  $table.find('.addsingle').click(function () {
+  $table.find('.addsingle').click(function (e) {
+    e.preventDefault();
     competencyAddSingle(this);
   });
 
-  $table.find('.addmultiple').click(function () {
+  $table.find('.addmultiple').click(function (e) {
+    e.preventDefault();
     competencyAddMultiple(this);
   });
 
-  $table.find('.removesingle').click(function () {
+  $table.find('.removesingle').click(function (e) {
+    e.preventDefault();
     competencyRemoveSingle(this);
   });
 }

@@ -31,6 +31,7 @@ $string['admin:user:setting:enabled'] = 'Enable this displacement';
 $string['competency:remove:title'] = 'Remove competency';
 $string['competency:remove:multiple'] = 'Attention, in case you remove a competency from a course, students progress may be removed as well. Do you really want to remove all competencies within "<i>{$a->shortname}</i>" from this course?';
 $string['competency:remove:single'] = 'Attention, in case you remove a competency from a course, students progress may be removed as well. Do you really want to remove "<i>{$a->shortname}</i>" from this course?';
+$string['competency:loading_framework'] = 'Loading {$a} ...';
 
 $string['competency:setting'] = 'Competency';
 $string['competency:setting:canselect'] = 'Depth for single competency';
