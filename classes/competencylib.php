@@ -224,10 +224,10 @@ class competencylib {
                 }
             }
 
-            if ($competency->used || empty($uses_komet) || !$usedbykomet || $competency->depth > $canselect) {
+            if ($competency->used || empty($uses_komet) || !$usedbykomet || $competency->depth >= $canselect) {
                 $competency->canselect = 1;
             }
-            if (empty($uses_komet) || !$usedbykomet || $competency->depth > $canselectall) {
+            if (empty($uses_komet) || !$usedbykomet || $competency->depth >= $canselectall) {
                 $competency->canselectall = 1;
             }
 
