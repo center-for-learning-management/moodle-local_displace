@@ -1,29 +1,69 @@
 // out: ../style/competency.css, sourcemap: false, compress: true
 .local_displace.competency {
-    .queue-pending {
-        blur: 5px;
+  .queue-pending {
+    blur: 5px;
+  }
+
+  .addsingle {
+    display: block;
+  }
+
+  .removesingle {
+    display: none;
+  }
+
+  .displace-alert {
+    &.danger {
+      background-color: rgba(255, 0, 0, 0.3);
     }
+
+    &.success {
+      background-color: rgba(0, 255, 0, 0.3);
+    }
+  }
+
+  .used:not(.displace-alert) {
+    background: #0a78d1;
+    color: white;
+    //font-weight: bold;
     .addsingle {
-        display: block;
+      display: none;
     }
+
     .removesingle {
-        display: none;
+      display: block;
     }
-    .displace-alert {
-        &.danger {
-            background-color: rgba(255,0,0,0.3);
-        }
-        &.success {
-            background-color: rgba(0,255,0,0.3);
-        }
+
+    a {
+      color: white;
     }
-    .used {
-        font-weight: bold;
-        .addsingle {
-            display: none;
-        }
-        .removesingle {
-            display: block;
-        }
+  }
+
+  .shortname {
+    padding-left: 10px;
+  }
+
+  tr.is-found .shortname {
+    font-weight: bold;
+  }
+
+  .has-children {
+    .toggler {
+      cursor: pointer;
     }
+
+    .toggler:hover span {
+      text-decoration: underline;
+    }
+  }
+
+  .sliding-wrapper {
+    overflow: hidden; /* To hide content during animation */
+    transition: height 0.5s ease; /* Smooth transition for height */
+    transition: max-height 0.5s ease; /* Smooth transition for height */
+  }
+
+  td {
+    transition: border-top-width 0.5s ease; /* Smooth transition for height */
+  }
 }
