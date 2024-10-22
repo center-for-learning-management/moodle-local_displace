@@ -75,12 +75,17 @@
                         </a>
                     </td>
                     <td>
-                        <details>
-                            <summary>{{#shortentext}} 90, {{{shortname}}} {{/shortentext}}</summary>
-                            <p>
-                                {{description}}
-                            </p>
-                        </details>
+                        {{#has_description}}
+                            <details>
+                                <summary>{{longname}}</summary>
+                                <p>
+                                    {{{description}}}
+                                </p>
+                            </details>
+                        {{/has_description}}
+                        {{^has_description}}
+                            {{longname}}
+                        {{/has_description}}
                     </td>
                     <td>
                         <details>

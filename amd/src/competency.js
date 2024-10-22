@@ -230,7 +230,7 @@ async function loadSelectedFramework() {
   var $select = $('.coursecompetenciesadd select[name="frameworkid"]');
   var selectedText = $select.find("option:selected").text();
 
-  var $existingFramework = $('.coursecompetenciesadd_framework[data-frameworkid=' + $select.val() + ']');
+  var $existingFramework = $('.coursecompetenciesadd_framework[data-frameworkid="' + $select.val() + '"]');
 
   // hide all other frameworks
   $('#local_displace-framework-container').children().hide();

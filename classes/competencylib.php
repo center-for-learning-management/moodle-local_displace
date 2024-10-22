@@ -231,7 +231,7 @@ class competencylib {
                 $competency->canselectall = 1;
             }
 
-            $competency->depthpx = $competency->depth * 25 + 15;
+            $competency->depthpx = $competency->depth * 28 + 40;
         }
 
         return $OUTPUT->render_from_template('local_displace/competency/coursecompetenciesadd_tree', $params);

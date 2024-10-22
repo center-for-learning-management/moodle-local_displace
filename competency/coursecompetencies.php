@@ -66,7 +66,7 @@ foreach ($ruleoutcomelist as $value => $text) {
 $frameworks = [];
 $pathcomp = [];
 $fastmodinfo = get_fast_modinfo($course->id);
-foreach ($coursecomps as &$coursecomp) {
+foreach ($coursecomps as $coursecomp) {
     if (empty($frameworks[$coursecomp->competencyframeworkid])) {
         $params = ['id' => $coursecomp->competencyframeworkid];
         $frameworks[$coursecomp->competencyframeworkid] =
@@ -106,6 +106,16 @@ foreach ($coursecomps as &$coursecomp) {
             ];
         }
     }
+
+    if (class_exists(\local_komettranslator\api::class)) {
+        $coursecomp->longname = \local_komettranslator\api::get_competency_longname($coursecomp);
+    } else {
+        $coursecomp->longname = $coursecomp->shortname;
+    }
+    if (trim($coursecomp->longname) == trim(strip_tags($coursecomp->description))) {
+        $coursecomp->description = '';
+    }
+    $coursecomp->has_description = !!trim(strip_tags($coursecomp->description));
 }
 
 $params = [
