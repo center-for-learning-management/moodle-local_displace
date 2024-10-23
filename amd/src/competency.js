@@ -6,7 +6,7 @@ import Pending from 'core/pending';
 import * as Str from 'core/str';
 import Config from 'core/config';
 
-var debug = false;
+var debug = true;
 var queue = [];
 var queueActiveItem = false;
 
@@ -223,17 +223,18 @@ export function setRuleOutcomeOption(select) {
 }
 
 function getCurrentTable() {
-  return $('.coursecompetenciesadd_framework:visible').first();
+  return $('#local_displace-framework-container > *:visible').first();
 }
 
 async function loadSelectedFramework() {
   var $select = $('.coursecompetenciesadd select[name="frameworkid"]');
   var selectedText = $select.find("option:selected").text();
 
-  var $existingFramework = $('.coursecompetenciesadd_framework[data-frameworkid="' + $select.val() + '"]');
-
   // hide all other frameworks
-  $('#local_displace-framework-container').children().hide();
+  $('#local_displace-framework-container > *').hide();
+
+  var frameworkid = $select.val();
+  var $existingFramework = $('#local_displace-framework-container > [data-frameworkid="' + frameworkid + '"]');
 
   const s = await get_strings([
     {key: 'competency:loading_framework', component: 'local_displace', param: selectedText}
@@ -243,17 +244,14 @@ async function loadSelectedFramework() {
     $existingFramework.show();
   } else {
     // Loading info table
-    var $loadingInfoTable = $('<div class="coursecompetenciesadd_framework" data-frameworkid="' + $select.val() + '">' + s[0] + '</div>');
-    $loadingInfoTable.appendTo('#local_displace-framework-container');
+    var $container = $('<div data-frameworkid="' + frameworkid + '">' + s[0] + '</div>').appendTo('#local_displace-framework-container');
 
-    $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + $select.val()).then(ret => {
-      var $newTable = $(ret);
+    $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + frameworkid).then(ret => {
+      console.log('show v2');
+      $container.html('');
+      $container.append(ret);
 
-      $loadingInfoTable.after($newTable);
-      $newTable.toggle($loadingInfoTable.is(':visible'));
-      $loadingInfoTable.remove();
-
-      initTable($newTable);
+      initTable($container.find('table'));
     });
   }
   // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
@@ -290,7 +288,6 @@ export function competenciesaddInit() {
     const searchText = this.value.trim();
 
     var $table = getCurrentTable();
-    console.log('input');
 
     $('#local_displace-table-search-not-entries-found-message').addClass('hidden');
 
@@ -357,7 +354,7 @@ function initTable($table) {
   // Idee: den content der TDs in ein DIV wrappen, welches mit der Höhe animiert wird
   // weil animation der Höhe mit overflow auf TDs nicht funktioniert
   // zusätzlich das padding entfernen und dieses auf den sliding-wrapper-inner übertragen
-  $table.find('tr td')
+  $table.find('td')
     .each(function () {
       if ($(this).children().length) {
         $(this).children().wrapAll('<div class="sliding-wrapper-inner"></div>');
