@@ -247,11 +247,11 @@ async function loadSelectedFramework() {
     var $container = $('<div data-frameworkid="' + frameworkid + '">' + s[0] + '</div>').appendTo('#local_displace-framework-container');
 
     $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + frameworkid).then(ret => {
-      console.log('show v2');
+      console.log('show with timeout');
       $container.html('');
       $container.append(ret);
 
-      initTable($container.find('table'));
+      setTimeout(() => initTable($container.find('table')), 200);
     });
   }
   // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
