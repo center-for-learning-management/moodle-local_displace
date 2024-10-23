@@ -28,19 +28,19 @@ function competencyAddSingle(a) {
     console.log('Add single', a);
   }
 
-  let id = $(a).closest('tr').attr('data-id');
+  let id = $(a).closest('.competency-row').attr('data-id');
 
   if (useSessionCompetencies) {
     sessionCompetencies.push(id);
-    $(a).closest('tr').addClass('used');
+    $(a).closest('.competency-row').addClass('used');
     $(':input[name="session_competencies"]').val(sessionCompetencies.join(','));
     return;
   }
 
   let method = 'core_competency_add_competency_to_course';
   let data = {'courseid': courseid, 'competencyid': id};
-  queue.push({'methodname': method, 'args': data, 'tr': $(a).closest('tr')});
-  $(a).closest('tr').addClass('queue-pending');
+  queue.push({'methodname': method, 'args': data, tr: $(a).closest('.competency-row')});
+  $(a).closest('.competency-row').addClass('queue-pending');
   competencyQueue();
 };
 
@@ -52,9 +52,7 @@ function competencyAddSingle(a) {
 async function competencyAddMultiple(a) {
   // Get the first child to decide if we
   // add or remove.
-  let tr = $(a).closest('tr');
-  let id = tr.attr('data-id');
-
+  let tr = $(a).closest('.competency-row');
   let children = getChildren(tr);
 
   if (children.length > 0) {
@@ -77,7 +75,7 @@ async function competencyAddMultiple(a) {
       if (useSessionCompetencies) {
         removeNow();
       } else {
-        let shortname = $(a).closest('tr').find('.shortname').html();
+        let shortname = $(a).closest('.competency-row').find('.shortname').html();
         const s = await get_strings([
           {'key': 'competency:remove:title', component: 'local_displace'},
           {'key': 'competency:remove:multiple', component: 'local_displace', param: {'shortname': shortname}},
@@ -105,16 +103,16 @@ async function competencyAddMultiple(a) {
  */
 async function competencyRemoveSingle(a, confirmed) {
   if (useSessionCompetencies) {
-    let id = $(a).closest('tr').attr('data-id');
+    let id = $(a).closest('.competency-row').attr('data-id');
 
     sessionCompetencies = sessionCompetencies.filter((value) => value != id);
-    $(a).closest('tr').removeClass('used');
+    $(a).closest('.competency-row').removeClass('used');
     $(':input[name="session_competencies"]').val(sessionCompetencies.join(','));
     return;
   }
 
   if (typeof confirmed === 'undefined') {
-    var shortname = $(a).closest('tr').find('.shortname').html();
+    var shortname = $(a).closest('.competency-row').find('.shortname').html();
     const s = await get_strings([
       {'key': 'competency:remove:title', component: 'local_displace'},
       {'key': 'competency:remove:single', component: 'local_displace', param: {'shortname': shortname}},
@@ -132,11 +130,11 @@ async function competencyRemoveSingle(a, confirmed) {
     if (debug) {
       console.log('Remove single', a);
     }
-    let id = $(a).closest('tr').attr('data-id');
+    let id = $(a).closest('.competency-row').attr('data-id');
     let method = 'core_competency_remove_competency_from_course';
     let data = {'courseid': courseid, 'competencyid': id};
-    queue.push({'methodname': method, 'args': data, 'tr': $(a).closest('tr')});
-    $(a).closest('tr').addClass('queue-pending');
+    queue.push({'methodname': method, 'args': data, tr: $(a).closest('.competency-row')});
+    $(a).closest('.competency-row').addClass('queue-pending');
     competencyQueue();
   }
 }
@@ -198,7 +196,7 @@ export function setRuleOutcomeOption(select) {
   let pendingPromise = new Pending();
   let requests = [];
 
-  let coursecompetencyid = $(select).closest('tr').attr('data-id');
+  let coursecompetencyid = $(select).closest('.competency-row').attr('data-id');
   let ruleoutcome = $(select).val();
   requests = Ajax.call([
     {
@@ -222,7 +220,7 @@ export function setRuleOutcomeOption(select) {
     .then(pendingPromise.resolve);
 }
 
-function getCurrentTable() {
+function getCurrentFramework() {
   return $('#local_displace-framework-container > *:visible').first();
 }
 
@@ -251,7 +249,7 @@ async function loadSelectedFramework() {
       $container.html('');
       $container.append(ret);
 
-      setTimeout(() => initTable($container.find('table')), 200);
+      setTimeout(() => initContainer($container), 200);
     });
   }
   // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
@@ -286,162 +284,99 @@ export function competenciesaddInit() {
     }
   });
 
+  $('#local_displace-framework-container')
+    .on('click', '.has-children .toggler', function (e) {
+      e.preventDefault();
+      toggleNode(this, null, true);
+    })
+    // handle other events
+    .on('click', '.addsingle', function (e) {
+      e.preventDefault();
+      competencyAddSingle(this);
+    })
+    .on('click', '.addmultiple', function (e) {
+      e.preventDefault();
+      competencyAddMultiple(this);
+    })
+    .on('click', '.removesingle', function (e) {
+      e.preventDefault();
+      competencyRemoveSingle(this);
+    });
+
   $(document).on('input', ':input[name="competency-search"]', function () {
     const searchText = this.value.trim();
 
-    var $table = getCurrentTable();
+    var $container = getCurrentFramework();
 
     $('#local_displace-table-search-not-entries-found-message').addClass('hidden');
 
-    if (!searchText) {
-      if ($table.find('tr[data-id]:visible').length == 0) {
+    $container.find('.competency-row').removeClass('is-found')
+
+    if (searchText.length <= 2) {
+      $container.find('.competency-root-container').children('.competency-container').removeClass('hidden');
+      if ($container.find('.competency-row.is-found').length) {
+        $container.find('.is-found')
+          .removeClass('is-found');
+      } else {
         // last search was empty, so show default table
+
+        // first hide and close all
+        $container.find('.competency-row.open').removeClass('open');
         // show first level
-        getCurrentTable().find('tr').filter(function () {
-          return getParentPath($(this).attr('data-fullpath')) == '/0';
-        })
-          .removeClass('hidden')
-          // also open first level
+        $container.find('.competency-root-container').children()
           .each(function () {
             toggleNode(this, true);
           });
-      } else {
-        $table.find('tr[data-id]')
-          .removeClass('is-found');
       }
     } else {
       // first hide and close all
-      $table.find('tr[data-id]')
-        .addClass('hidden')
-        .removeClass('is-found')
-        .removeClass('children-visible')
-        .find('.fa-folder').removeClass('fa-folder-open');
+      $container.find('.competency-row.open').removeClass('open');
+
+      $container.find('.competency-root-container').children('.competency-container').addClass('hidden');
 
       // show found items
-      $table.find('.shortname')
+      var $foundRows = $container.find('.shortname')
         .filter((index, el) => el.textContent.toLowerCase().includes(searchText.toLowerCase()))
-        .closest('tr')
-        .addClass('is-found')
+        .closest('.competency-row')
+        .addClass('is-found');
+
+      if ($foundRows.length) {
         // then open it and all parents
-        .each((index, el) => {
-          var $tr = $(el);
-
-          do {
-            $tr.removeClass('hidden');
-            toggleNode($tr, true);
-          } while ($tr = getParent($tr));
-        });
-
-      if ($table.find('tr[data-id]:visible').length == 0) {
+        $foundRows.parents('.competency-container').children('.competency-row.has-children').addClass('open');
+        $container.find('.competency-container.hidden').has('> .competency-row.open').removeClass('hidden');
+        $foundRows.filter('.has-children').addClass('open');
+      } else {
         $('#local_displace-table-search-not-entries-found-message').removeClass('hidden');
       }
     }
   });
 }
 
-function getParentPath(path) {
-  if (path) {
-    return path.replace(/\/[0-9]+$/, '');
-  }
-}
+// function getParentPath(path) {
+//   if (path) {
+//     return path.replace(/\/[0-9]+$/, '');
+//   }
+// }
 
-function initTable($table) {
+function initContainer($container) {
   if (sessionCompetencies.length) {
     sessionCompetencies.forEach((id) => {
-      $table.find('tr[data-id=' + id + ']').addClass('used');
+      $container.find('.competency-row[data-id=' + id + ']').addClass('used');
     });
   }
 
-  // styles for animation
-  // Idee: den content der TDs in ein DIV wrappen, welches mit der Höhe animiert wird
-  // weil animation der Höhe mit overflow auf TDs nicht funktioniert
-  // zusätzlich das padding entfernen und dieses auf den sliding-wrapper-inner übertragen
-  $table.find('td')
-    .each(function () {
-      if ($(this).children().length) {
-        $(this).children().wrapAll('<div class="sliding-wrapper-inner"></div>');
-      } else {
-        $(this).append('<div class="sliding-wrapper-inner"></div>');
-      }
-
-      var $wrapperInner = $(this).find('.sliding-wrapper-inner');
-      $wrapperInner.wrap('<div class="sliding-wrapper"></div>');
-
-      $wrapperInner.css('padding', $(this).css('padding'));
-      $wrapperInner.css('border-top', $(this).css('border-top'));
-    })
-    .css('padding', '0')
-    .css('border-top', 'none')
-
-  // show first level
-  $table.find('tr').filter(function () {
-    return getParentPath($(this).attr('data-fullpath')) == '/0';
-  })
-    .removeClass('hidden')
-    // also open first level
+  // open first level
+  $container.find('.competency-root-container').children()
     .each(function () {
       toggleNode(this, true);
     });
 
   // open used competencies
-  $table.find('tr.used').each(function () {
-    toggleInitRecursive(this);
-  });
-
-  // handle toggle click
-  $table.find('tr.has-children .toggler').click(function (e) {
-    e.preventDefault();
-    toggleNode(this, null, true);
-  })
-
-  // handle other events
-  $table.find('.addsingle').click(function (e) {
-    e.preventDefault();
-    competencyAddSingle(this);
-  });
-
-  $table.find('.addmultiple').click(function (e) {
-    e.preventDefault();
-    competencyAddMultiple(this);
-  });
-
-  $table.find('.removesingle').click(function (e) {
-    e.preventDefault();
-    competencyRemoveSingle(this);
-  });
-}
-
-function getParent(tr) {
-  var $tr = $(tr);
-
-  let $parent = $(tr).closest('table').find('tr[data-fullpath="' + getParentPath($tr.attr('data-fullpath')) + '"]');
-  if ($parent.length > 0) {
-    return $parent;
-  }
+  $container.find('.competency-row.used').parents('.competency-container').children('.competency-row.has-children').addClass('open');
 }
 
 function getChildren(tr) {
-  var $tr = $(tr);
-
-  const parentPath = $tr.attr('data-fullpath');
-
-  return $(tr).closest('table').find('tr[data-fullpath^="' + $tr.attr('data-fullpath') + '/"]')
-    .filter(function () {
-      return getParentPath($(this).attr('data-fullpath')) == parentPath;
-    });
-}
-
-/**
- * Toggle recursively nodes by their parents.
- * @param {DOMElement} tr to start with.
- */
-function toggleInitRecursive(tr) {
-  var $tr = $(tr);
-
-  do {
-    $tr.removeClass('hidden');
-    toggleNode($tr, true);
-  } while ($tr = getParent($tr));
+  return $(tr).closest('.competency-container').children('.competency-children').children().children('.competency-row');
 }
 
 /**
@@ -449,7 +384,16 @@ function toggleInitRecursive(tr) {
  * @param {DOMElement} sender
  */
 function toggleNode(sender, open = undefined, animate = false) {
-  let $tr = $(sender).closest('tr');
+  var $sender = $(sender);
+  if ($sender.is('.competency-container')) {
+    $sender = $sender.children('.competency-row');
+  } else {
+    $sender = $sender.closest('.competency-row');
+  }
+  $sender.toggleClass('open', open);
+  return;
+
+  let $tr = $(sender).closest('.competency-row');
   let $table = $tr.closest('table');
 
   if (open === null || open === undefined) {

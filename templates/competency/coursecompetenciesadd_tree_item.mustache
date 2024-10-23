@@ -1,0 +1,40 @@
+{{#competencies}}
+<div class="competency-container">
+    <div class="competency-row {{#haschildren}}has-children{{/haschildren}} {{#used}}used{{/used}}"
+        style="padding-left: {{depthpx}}px;"
+        data-id="{{id}}" data-fullpath="{{path}}{{id}}"
+        >
+        <div class="toggler">
+            {{^haschildren}}
+                <i class="fa fa-file"></i>
+            {{/haschildren}}
+            {{#haschildren}}
+                <i class="fa fa-folder"></i>
+                <i class="fa fa-folder-open"></i>
+            {{/haschildren}}
+            <span class="shortname">{{longname}}</span>
+        </div>
+        <div style="text-align: right;">
+            {{#haschildren}}{{#canselectall}}
+                <a href="#" class="addmultiple" title="Alle auswählen / Auswahl aufheben">
+                    <i class="fa fa-list"></i>
+                </a>
+            {{/canselectall}}{{/haschildren}}
+            {{#canselect}}
+                <a href="#" class="removesingle">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="#" class="addsingle">
+                    <i class="fa fa-plus"></i>
+                </a>
+            {{/canselect}}
+        </div>
+    </div>
+
+    {{#haschildren}}
+        <div class="competency-children">
+        {{{children_output}}}
+        </div>
+    {{/haschildren}}
+</div>
+{{/competencies}}

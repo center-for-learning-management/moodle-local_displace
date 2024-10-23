@@ -1,15 +1,69 @@
 // out: ../style/competency.css, sourcemap: false, compress: true
 .local_displace.competency {
-  .queue-pending {
-    blur: 5px;
+  .competency-header {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    background: #eee;
+    padding: 5px 10px;
+
+    div {
+      font-weight: bold;
+    }
+    div:first-child {
+      flex-grow: 1;
+    }
+  }
+
+  .competency-children {
+    //display: none;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.2s ease, opacity 0.4s ease;
+  }
+
+  .competency-row {
+    .fa-folder-open {
+      display: none;
+    }
+
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    padding: 5px 10px;
+  }
+
+  .competency-row.open {
+    .fa-folder-open {
+      display: inline;
+    }
+    .fa-folder-close {
+      display: none;
+    }
+    & + .competency-children {
+      //display: block;
+      max-height: 10000px; /* Large enough to accommodate content */
+      opacity: 1;
+    }
   }
 
   .addsingle {
-    display: block;
+    margin-left: 10px;
   }
 
   .removesingle {
-    display: none;
+    margin-left: 10px;
+  }
+
+  .competency-row {
+    &:not(.used) .removesingle {
+      display: none;
+    }
+    &.used .addsingle {
+      display: none;
+    }
+  }
+  .queue-pending {
+    blur: 5px;
   }
 
   .displace-alert {
@@ -26,13 +80,13 @@
     background: #0a78d1;
     color: white;
     //font-weight: bold;
-    .addsingle {
-      display: none;
-    }
-
-    .removesingle {
-      display: block;
-    }
+    //.addsingle {
+    //  display: none;
+    //}
+    //
+    //.removesingle {
+    //  display: inline-block;
+    //}
 
     a {
       color: white;
@@ -41,16 +95,17 @@
 
   /* icon und text richtig ausrichten */
   .toggler {
+    flex-grow: 1;
     i {
       margin-left: -22px;
     }
   }
 
   .shortname {
-    padding-left: 10px;
+    padding-left: 6px;
   }
 
-  tr.is-found .shortname {
+  .is-found .shortname {
     font-weight: bold;
   }
 
@@ -64,13 +119,7 @@
     }
   }
 
-  .sliding-wrapper {
-    overflow: hidden; /* To hide content during animation */
-    transition: height 0.5s ease; /* Smooth transition for height */
-    transition: max-height 0.5s ease; /* Smooth transition for height */
-  }
-
-  td {
-    transition: border-top-width 0.5s ease; /* Smooth transition for height */
-  }
+  //td {
+  //  transition: border-top-width 0.5s ease; /* Smooth transition for height */
+  //}
 }

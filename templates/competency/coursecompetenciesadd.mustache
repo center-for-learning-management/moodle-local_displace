@@ -44,7 +44,7 @@
     <input type="hidden" name="session_competencies" value="{{session_competencies}}"/>
     <div style="display: flex; justify-content: space-between;" class="mb-2">
         <div>
-            <select name="frameworkid">
+            <select class="form-control" name="frameworkid">
                 {{#frameworks}}
                 <option value="{{id}}"{{#selected}} selected="selected"{{/selected}}>
                     {{shortname}}
@@ -75,13 +75,13 @@
         </div>
     </div>
 
-    <div id="local_displace-framework-container">
-        <div>
+    <div id="local_displace-framework-container" class="mt-2">
+        <div style="padding-top: 15px">
             {{#str}} competency:loading_framework, local_displace {{/str}}
         </div>
     </div>
 
-    <div id="local_displace-table-search-not-entries-found-message" class="hidden">
+    <div id="local_displace-table-search-not-entries-found-message" class="hidden mt-2" style="padding: 5px 10px">
         <p>Keine Einträge gefunden</p>
     </div>
 </div>
