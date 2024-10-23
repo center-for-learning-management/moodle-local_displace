@@ -230,15 +230,15 @@ async function loadSelectedFramework() {
   var $select = $('.coursecompetenciesadd select[name="frameworkid"]');
   var selectedText = $select.find("option:selected").text();
 
+  const s = await get_strings([
+    {key: 'competency:loading_framework', component: 'local_displace', param: selectedText}
+  ]);
+
   // hide all other frameworks
   $('#local_displace-framework-container > *').hide();
 
   var frameworkid = $select.val();
   var $existingFramework = $('#local_displace-framework-container > [data-frameworkid="' + frameworkid + '"]');
-
-  const s = await get_strings([
-    {key: 'competency:loading_framework', component: 'local_displace', param: selectedText}
-  ]);
 
   if ($existingFramework.length) {
     $existingFramework.show();
@@ -279,10 +279,12 @@ export function competenciesaddInit() {
 
   $('.coursecompetenciesadd select[name="frameworkid"]').change(loadSelectedFramework)
 
-  if ($('#local_displace-framework-container').is(':visible')) {
+  $(function () {
     // only load tree if container is visible
-    loadSelectedFramework();
-  }
+    if ($('#local_displace-framework-container').is(':visible')) {
+      loadSelectedFramework();
+    }
+  });
 
   $(document).on('input', ':input[name="competency-search"]', function () {
     const searchText = this.value.trim();
