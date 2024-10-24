@@ -6,7 +6,7 @@ import Pending from 'core/pending';
 import * as Str from 'core/str';
 import Config from 'core/config';
 
-var debug = true;
+var debug = false;
 var queue = [];
 var queueActiveItem = false;
 
@@ -245,11 +245,11 @@ async function loadSelectedFramework() {
     var $container = $('<div data-frameworkid="' + frameworkid + '">' + s[0] + '</div>').appendTo('#local_displace-framework-container');
 
     $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + frameworkid).then(ret => {
-      console.log('show with timeout');
       $container.html('');
       $container.append(ret);
 
-      setTimeout(() => initContainer($container), 200);
+      initContainer($container);
+      // setTimeout(() => initContainer($container), 200);
     });
   }
   // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
@@ -390,7 +390,9 @@ function initContainer($container) {
   }
 
   // open first level
+  if (debug) {
   console.log('root container', getRootContainers($container).length, getRootContainers($container));
+  }
   getRootContainers($container).each(function () {
       toggleNode(this, true);
     });
