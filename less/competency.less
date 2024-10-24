@@ -9,6 +9,7 @@
     div {
       font-weight: bold;
     }
+
     div:first-child {
       flex-grow: 1;
     }
@@ -36,9 +37,11 @@
     .fa-folder-open {
       display: inline;
     }
+
     .fa-folder-close {
       display: none;
     }
+
     & + .competency-children {
       //display: block;
       max-height: 10000px; /* Large enough to accommodate content */
@@ -46,22 +49,20 @@
     }
   }
 
-  .addsingle {
-    margin-left: 10px;
-  }
-
-  .removesingle {
-    margin-left: 10px;
+  .addsingle, .removesingle, .addmultiple {
+    margin-left: 14px;
   }
 
   .competency-row {
     &:not(.used) .removesingle {
       display: none;
     }
+
     &.used .addsingle {
       display: none;
     }
   }
+
   .queue-pending {
     blur: 5px;
   }
@@ -93,9 +94,15 @@
     }
   }
 
+  a {
+    text-decoration: none;
+  }
+
   /* icon und text richtig ausrichten */
+
   .toggler {
     flex-grow: 1;
+
     i {
       margin-left: -22px;
     }
@@ -116,6 +123,34 @@
 
     .toggler:hover span {
       text-decoration: underline;
+    }
+  }
+
+  .clear-button-wrapper {
+    position: relative;
+    display: inline-block;
+
+    input {
+      padding-right: 30px; /* Space for the clear button */
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .clear-button {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 22px;
+      padding: 0 8px 2px 8px;
+      color: #999;
+      margin-top: -1px;
+      display: none;
+    }
+
+    .clear-button:hover {
+      color: #333;
     }
   }
 

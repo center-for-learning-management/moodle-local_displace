@@ -42,7 +42,7 @@
 }}
 <div class="local_displace competency coursecompetenciesadd {{#initially_hidden}}hidden{{/initially_hidden}}">
     <input type="hidden" name="session_competencies" value="{{session_competencies}}"/>
-    <div style="display: flex; justify-content: space-between;" class="mb-2">
+    <div style="display: flex; justify-content: space-between;" class="mb-4">
         <div>
             <select class="form-control" name="frameworkid">
                 {{#frameworks}}
@@ -57,14 +57,17 @@
               <label for="searchinput-{{uniqid}}">
                 <span class="sr-only">{{#str}} search, core {{/str}}</span>
               </label>
-              <input type="text"
-                     class="form-control"
-                     placeholder="{{#str}} search, core {{/str}}"
-                     aria-label="{{#str}} search, core {{/str}}"
-                     name="competency-search"
-                     data-region="input"
-                     autocomplete="off"
-              >
+              <div class="clear-button-wrapper">
+                  <input type="text"
+                         class="form-control"
+                         placeholder="{{#str}} search, core {{/str}}"
+                         aria-label="{{#str}} search, core {{/str}}"
+                         name="competency-search"
+                         data-region="input"
+                         autocomplete="off"
+                  >
+                  <span class="clear-button">&times;</span>
+              </div>
               <div class="input-group-append" style="flex-shrink: 0"> {{! ohne flex-shrink wird das Suchformular nicht richtig angezeigt?!? }}
                 <button type="submit" class="btn btn-primary search-icon">
                   {{#pix}} a/search, core {{/pix}}
@@ -75,13 +78,13 @@
         </div>
     </div>
 
-    <div id="local_displace-framework-container" class="mt-2">
-        <div style="padding-top: 15px">
+    <div id="local_displace-framework-container">
+        <div>
             {{#str}} competency:loading_framework, local_displace {{/str}}
         </div>
     </div>
 
-    <div id="local_displace-table-search-not-entries-found-message" class="hidden mt-2" style="padding: 5px 10px">
+    <div id="local_displace-table-search-not-entries-found-message" class="hidden" style="padding: 5px 10px">
         <p>Keine Einträge gefunden</p>
     </div>
 </div>

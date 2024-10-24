@@ -275,7 +275,15 @@ export function competenciesaddInit() {
     console.log('competenciesaddInit');
   }
 
-  $('.coursecompetenciesadd select[name="frameworkid"]').change(loadSelectedFramework)
+  $('.coursecompetenciesadd select[name="frameworkid"]').change(function(){
+    // clear old search
+    var $search = $('.local_displace.competency .simplesearchform :input[type="text"]');
+    if ($search.val()) {
+      $search.val('').trigger('input');
+    }
+
+    loadSelectedFramework();
+  });
 
   $(function () {
     // only load tree if container is visible
@@ -303,42 +311,50 @@ export function competenciesaddInit() {
       competencyRemoveSingle(this);
     });
 
+  $(document).on('click', '.local_displace.competency .simplesearchform .clear-button', function () {
+    $(this).closest('.clear-button-wrapper').find(':input[type="text"]').val('').trigger('input');
+  });
+
   $(document).on('input', ':input[name="competency-search"]', function () {
     const searchText = this.value.trim();
 
     var $container = getCurrentFramework();
 
     $('#local_displace-table-search-not-entries-found-message').addClass('hidden');
+    $(this).closest('.clear-button-wrapper').find('.clear-button').toggle(searchText.length > 0);
 
-    $container.find('.competency-row').removeClass('is-found')
+    var $oldFoundRows = $container.find('.competency-row.is-found');
+    $oldFoundRows.removeClass('is-found');
 
     if (searchText.length <= 2) {
-      $container.find('.competency-root-container').children('.competency-container').removeClass('hidden');
-      if ($container.find('.competency-row.is-found').length) {
-        $container.find('.is-found')
-          .removeClass('is-found');
+      getRootContainers($container).removeClass('hidden');
+      if ($oldFoundRows.length) {
+        // leave tree as is
       } else {
         // last search was empty, so show default table
 
         // first hide and close all
         $container.find('.competency-row.open').removeClass('open');
-        // show first level
-        $container.find('.competency-root-container').children()
-          .each(function () {
-            toggleNode(this, true);
-          });
+
+        // open first level
+        getRootContainers($container).each(function () {
+          toggleNode(this, true);
+        });
+
+        // open used competencies
+        $container.find('.competency-row.used').parents('.competency-container').children('.competency-row.has-children').addClass('open');
       }
     } else {
       // first hide and close all
       $container.find('.competency-row.open').removeClass('open');
 
-      $container.find('.competency-root-container').children('.competency-container').addClass('hidden');
+      getRootContainers($container).addClass('hidden');
 
       // show found items
       var $foundRows = $container.find('.shortname')
         .filter((index, el) => el.textContent.toLowerCase().includes(searchText.toLowerCase()))
         .closest('.competency-row')
-        .addClass('is-found');
+        .addClass('is-found').slice(0, 1000);
 
       if ($foundRows.length) {
         // then open it and all parents
@@ -358,6 +374,14 @@ export function competenciesaddInit() {
 //   }
 // }
 
+function getRootContainers($container) {
+  if (!$container) {
+    $container = getCurrentFramework();
+  }
+
+  return $container.find('.competency-root-container').children('.competency-container');
+}
+
 function initContainer($container) {
   if (sessionCompetencies.length) {
     sessionCompetencies.forEach((id) => {
@@ -366,8 +390,8 @@ function initContainer($container) {
   }
 
   // open first level
-  $container.find('.competency-root-container').children()
-    .each(function () {
+  console.log('root container', getRootContainers($container).length, getRootContainers($container));
+  getRootContainers($container).each(function () {
       toggleNode(this, true);
     });
 
