@@ -69,7 +69,7 @@
                   <span class="clear-button">&times;</span>
               </div>
               <div class="input-group-append" style="flex-shrink: 0"> {{! ohne flex-shrink wird das Suchformular nicht richtig angezeigt?!? }}
-                <button type="submit" class="btn btn-primary search-icon">
+                <button type="button" class="btn btn-primary search-icon">
                   {{#pix}} a/search, core {{/pix}}
                   <span class="sr-only">{{#str}} search, core {{/str}}</span>
                 </button>
@@ -84,8 +84,11 @@
         </div>
     </div>
 
-    <div id="local_displace-table-search-not-entries-found-message" class="hidden" style="padding: 5px 10px">
+    <div id="local_displace-table-search-not-entries-found-message" class="hidden" style="padding: 25px 10px 5px 10px; font-weight: bold">
         <p>Keine Einträge gefunden</p>
+    </div>
+    <div id="local_displace-table-search-more-entries-found" class="hidden" style="padding: 25px 10px 5px 10px; font-weight: bold">
+        <p>Zu Ihrem Ergebnis wurden zu viele Einträge gefunden, es werden nur die ersten <span class="num"></span> Einträge angezeigt.</p>
     </div>
 </div>
 

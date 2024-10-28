@@ -36,8 +36,6 @@ if ($courseid) {
     \core_competency\api::require_enabled();
     require_capability('moodle/competency:coursecompetencymanage', $coursecontext);
 
-    \core_competency\api::require_enabled();
-
     $PAGE->set_context($coursecontext);
     $PAGE->set_title($course->fullname);
     $PAGE->set_heading($course->fullname);

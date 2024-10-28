@@ -25,6 +25,8 @@ $string['cachedef_application'] = 'Applicationcache für local_displace';
 $string['cachedef_request'] = 'Requestcache für local_displace';
 $string['cachedef_session'] = 'Sessioncache für local_displace';
 
+$string['competencies'] = 'Kompetenzen';
+
 $string['competency:remove:title'] = 'Kompetenz entfernen';
 $string['competency:remove:multiple'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher alle Kompetenzen innerhalb von "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';
 $string['competency:remove:single'] = 'Achtung, wenn Sie Kompetenzen aus dem Kurs entfernen, werden die Lernfortschritte der Schüler/innen möglicherweise ebenfalls entfernt. Wollen Sie sicher die Kompetenz "<i>{$a->shortname}</i>" aus dem Kurs entfernen?';

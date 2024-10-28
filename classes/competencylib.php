@@ -26,62 +26,6 @@ defined('MOODLE_INTERNAL') || die;
 
 class competencylib {
     /**
-     * Load the competency-list of a framework.
-     * @param frameworkid the id of the framework.
-     * @param path the path to load.
-     * @param tree the array to attach items to.
-     * @param depth the depth.
-     **/
-    public static function build_competency_list($frameworkid) {
-        global $courseid, $DB;
-
-        $sql = "SELECT c.*, IF(ccc.id>0,1,0) as used
-                    FROM {competency} c
-                    LEFT JOIN {competency_coursecomp} ccc ON c.id = ccc.competencyid AND ccc.courseid = ?
-                    WHERE competencyframeworkid = ?
-                    ORDER BY shortname ASC";
-        $competencies = $DB->get_records_sql($sql, [$courseid, $frameworkid]);
-        $competenciesByParent = [];
-
-        foreach ($competencies as $item) {
-            if (!$item->shortname) {
-                $item->shortname = $item->description;
-            }
-            $item->depth = 0;
-
-            $item->longname = $item->shortname;
-            if (class_exists(\local_komettranslator\api::class)) {
-                $item->longname = \local_komettranslator\api::get_competency_longname($item);
-            }
-
-            if (!isset($competenciesByParent[$item->parentid])) {
-                $competenciesByParent[$item->parentid] = [];
-            }
-            $competenciesByParent[$item->parentid][] = $item;
-        }
-
-        $todoList = $competenciesByParent[0] ?? [];
-        $list = [];
-        while ($item = array_shift($todoList)) {
-            $list[] = $item;
-
-            $sublist = $competenciesByParent[$item->id] ?? [];
-            $item->haschildren = count($sublist) > 0;
-
-            if ($sublist) {
-                foreach ($sublist as $subitem) {
-                    $subitem->depth = $item->depth + 1;
-                }
-
-                // add children in front of the todo list, so they are processed next
-                $todoList = array_merge($sublist, $todoList);
-            }
-        }
-
-        return $list;
-    }
-
-    /**
      * Load the competency-tree of a framework.
      * @param frameworkid the id of the framework.
      * @param path the path to load.
@@ -176,15 +120,9 @@ class competencylib {
             }
         }
 
-        if ($initially_hidden) {
-            $frameworkid = 'dummy';
-        } else {
-        }
         $params = [
-            'action' => '',
             'initially_hidden' => $initially_hidden,
             'courseid' => $courseid,
-            'frameworkid' => $frameworkid,
             'frameworks' => $frameworks,
             'session_competencies' => $_REQUEST['session_competencies'] ?? '',
         ];
@@ -229,8 +167,6 @@ class competencylib {
                 if (!$uses_komet || !$usedbykomet || $competency->depth >= $canselectall) {
                     $competency->canselectall = 1;
                 }
-
-                $competency->depthpx = $competency->depth * 28 + 40;
             }
 
             $params = [
@@ -241,48 +177,5 @@ class competencylib {
         };
 
         return $renderItems($competenciesByParent[0]);
-    }
-
-    public static function render_competency_selector_tree_old($courseid, $frameworkid) {
-        global $OUTPUT;
-
-        $competencytree = static::build_competency_list($frameworkid);
-
-        $params = [
-            'action' => 'competency_selector_tree',
-            // 'courseid' => $courseid,
-            'frameworkid' => $frameworkid,
-            'competencies' => $competencytree,
-        ];
-
-        $canselect = get_config('local_displace', 'competency_canselect');
-        $canselectall = get_config('local_displace', 'competency_canselectall');
-
-        $uses_komet = get_config('local_komettranslator', 'version');
-        $komet_types = ['subject', 'topic', 'descriptor'];
-
-        foreach ($competencytree as $competency) {
-            $usedbykomet = false;
-
-            if (!empty($uses_komet)) {
-                foreach ($komet_types as $komet_type) {
-                    $usedbykomet = \local_komettranslator\api::get_copmetency_mapping($komet_type, $competency->id);
-                    if ($usedbykomet) {
-                        break;
-                    }
-                }
-            }
-
-            if ($competency->used || empty($uses_komet) || !$usedbykomet || $competency->depth >= $canselect) {
-                $competency->canselect = 1;
-            }
-            if (empty($uses_komet) || !$usedbykomet || $competency->depth >= $canselectall) {
-                $competency->canselectall = 1;
-            }
-
-            $competency->depthpx = $competency->depth * 28 + 40;
-        }
-
-        return $OUTPUT->render_from_template('local_displace/competency/coursecompetenciesadd_tree', $params);
     }
 }

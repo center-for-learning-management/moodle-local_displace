@@ -1,4 +1,3 @@
-/* eslint-disable */
 import $ from 'jquery';
 import Ajax from 'core/ajax';
 import Notification from 'core/notification';
@@ -6,9 +5,9 @@ import Pending from 'core/pending';
 import * as Str from 'core/str';
 import Config from 'core/config';
 
-var debug = false;
-var queue = [];
-var queueActiveItem = false;
+const debug = false;
+const queue = [];
+let queueActiveItem = false;
 
 const courseid = Config.courseId > 1 ? Config.courseId : 0;
 const useSessionCompetencies = !courseid;
@@ -21,7 +20,7 @@ if (sessionCompetenciesTmp) {
 
 /**
  * Add a single competency to a course.
- * @param {DOMElement} a sender of the event.
+ * @param {HTMLElement} a sender of the event.
  */
 function competencyAddSingle(a) {
   if (debug) {
@@ -39,46 +38,53 @@ function competencyAddSingle(a) {
 
   let method = 'core_competency_add_competency_to_course';
   let data = {'courseid': courseid, 'competencyid': id};
-  queue.push({'methodname': method, 'args': data, tr: $(a).closest('.competency-row')});
+  queue.push({'methodname': method, 'args': data, row: $(a).closest('.competency-row')});
   $(a).closest('.competency-row').addClass('queue-pending');
   competencyQueue();
-};
+}
 
 /**
  * Add/Remove multiple competencies
  * to/from a course.
- * @param {DOMElement} a sender of the event.
+ * @param {HTMLElement} a sender of the event.
  */
 async function competencyAddMultiple(a) {
   // Get the first child to decide if we
   // add or remove.
-  let tr = $(a).closest('.competency-row');
-  let children = getChildren(tr);
+  let row = $(a).closest('.competency-row');
+  let children = getChildren(row)
+    // nur sichtbare hinzufügen, weil aufgrund der suche ggf welche versteckt sind
+    .filter(function () {
+      return $(this).closest('.hidden').length === 0;
+    });
+
+  /**
+   * mark children as removed
+   */
+  function removeNow() {
+    children.filter('.used').each(function () {
+      competencyRemoveSingle($(this).find('.removesingle'), true);
+    });
+  }
 
   if (children.length > 0) {
     // falls einer noch nicht ausgewählt ist, alle auswählen, sonst alle abwählen
     var selectAll = children.filter(':not(.used)').length > 0;
 
-    toggleNode(tr, true, true);
+    toggleNode(row, true);
 
     if (selectAll) {
       children.not('.used').each(function () {
         competencyAddSingle($(this).find('.addsingle'));
       });
     } else {
-      function removeNow() {
-        children.filter('.used').each(function () {
-          competencyRemoveSingle($(this).find('.removesingle'), true);
-        });
-      }
-
       if (useSessionCompetencies) {
         removeNow();
       } else {
         let shortname = $(a).closest('.competency-row').find('.shortname').html();
         const s = await get_strings([
           {'key': 'competency:remove:title', component: 'local_displace'},
-          {'key': 'competency:remove:multiple', component: 'local_displace', param: {'shortname': shortname}},
+          {'key': 'competency:remove:multiple', component: 'local_displace', param: {shortname}},
           {'key': 'yes'},
           {'key': 'no'}
         ]);
@@ -97,25 +103,34 @@ async function competencyAddMultiple(a) {
 }
 
 /**
+ * Remove a single competency from a course and hide it from the list.
+ * @param {HTMLElement} el
+ * @returns {Promise<void>}
+ */
+export async function competencyRemoveFromList(el) {
+  competencyRemoveSingle(el);
+}
+
+/**
  * Remove a single competency from a course.
- * @param {DOMElement} a sender of the event.
+ * @param {HTMLElement} el sender of the event.
  * @param {boolean} confirmed if the user confirmed the action.
  */
-async function competencyRemoveSingle(a, confirmed) {
+export async function competencyRemoveSingle(el, confirmed = false) {
   if (useSessionCompetencies) {
-    let id = $(a).closest('.competency-row').attr('data-id');
+    let id = $(el).closest('.competency-row').attr('data-id');
 
     sessionCompetencies = sessionCompetencies.filter((value) => value != id);
-    $(a).closest('.competency-row').removeClass('used');
+    $(el).closest('.competency-row').removeClass('used');
     $(':input[name="session_competencies"]').val(sessionCompetencies.join(','));
     return;
   }
 
-  if (typeof confirmed === 'undefined') {
-    var shortname = $(a).closest('.competency-row').find('.shortname').html();
+  if (!confirmed) {
+    var shortname = $(el).closest('.competency-row').find('.shortname').html();
     const s = await get_strings([
       {'key': 'competency:remove:title', component: 'local_displace'},
-      {'key': 'competency:remove:single', component: 'local_displace', param: {'shortname': shortname}},
+      {'key': 'competency:remove:single', component: 'local_displace', param: {shortname}},
       {'key': 'yes'},
       {'key': 'no'}
     ]);
@@ -123,18 +138,18 @@ async function competencyRemoveSingle(a, confirmed) {
     Notification.confirm(
       s[0], s[1], s[2], s[3],
       function () {
-        competencyRemoveSingle(a, true);
+        competencyRemoveSingle(el, true);
       }
     );
   } else {
     if (debug) {
-      console.log('Remove single', a);
+      console.log('Remove single', el);
     }
-    let id = $(a).closest('.competency-row').attr('data-id');
+    let id = $(el).closest('.competency-row').attr('data-id');
     let method = 'core_competency_remove_competency_from_course';
     let data = {'courseid': courseid, 'competencyid': id};
-    queue.push({'methodname': method, 'args': data, tr: $(a).closest('.competency-row')});
-    $(a).closest('.competency-row').addClass('queue-pending');
+    queue.push({'methodname': method, 'args': data, row: $(el).closest('.competency-row')});
+    $(el).closest('.competency-row').addClass('queue-pending');
     competencyQueue();
   }
 }
@@ -158,30 +173,38 @@ function competencyQueue() {
     methodname: item.methodname,
     args: item.args,
     done: function (result) {
-      $(item.tr).removeClass('queue-pending');
-      if (debug) {
-        console.log('Results of ' + item.methodname, result);
-      }
-      if (result) {
-        if (item.methodname == 'core_competency_add_competency_to_course') {
-          $(item.tr).addClass('used');
-        } else {
-          $(item.tr).removeClass('used');
-        }
-        $(item.tr).addClass('displace-alert success');
-        setTimeout(
-          function () {
-            $(item.tr).removeClass('displace-alert success');
-          }, 1000
-        );
+      if (document.location.href.match(/coursecompetencies.php/)) {
+        // competencies list, remove the row
+        $(item.row).fadeOut(500, function () {
+          $(this).remove(); // Remove the <tr> from the DOM after fading out
+        });
       } else {
-        $(item.tr).addClass('displace-alert danger');
+        $(item.row).removeClass('queue-pending');
+        if (debug) {
+          console.log('Results of ' + item.methodname, result);
+        }
+        if (result) {
+          if (item.methodname == 'core_competency_add_competency_to_course') {
+            $(item.row).addClass('used');
+          } else {
+            $(item.row).removeClass('used');
+          }
+          $(item.row).addClass('displace-alert success');
+          setTimeout(
+            function () {
+              $(item.row).removeClass('displace-alert success');
+            }, 1000
+          );
+        } else {
+          $(item.row).addClass('displace-alert danger');
+        }
       }
+
       queueActiveItem = false;
       competencyQueue();
     },
     fail: function (ex) {
-      $(item.tr).addClass('displace-alert danger');
+      $(item.row).addClass('displace-alert danger');
       queueActiveItem = false;
       Notification.exception(ex);
     }
@@ -190,13 +213,13 @@ function competencyQueue() {
 
 /**
  * Sets the rule outcome option.
- * @param {DOMElement} select
+ * @param {HTMLElement} select
  */
 export function setRuleOutcomeOption(select) {
   let pendingPromise = new Pending();
   let requests = [];
 
-  let coursecompetencyid = $(select).closest('.competency-row').attr('data-id');
+  let coursecompetencyid = $(select).closest('.competency-row').attr('data-coursecompetencyid');
   let ruleoutcome = $(select).val();
   requests = Ajax.call([
     {
@@ -220,10 +243,40 @@ export function setRuleOutcomeOption(select) {
     .then(pendingPromise.resolve);
 }
 
+/**
+ * Get the currently visible framework
+ * @returns {jQuery}
+ */
 function getCurrentFramework() {
   return $('#local_displace-framework-container > *:visible').first();
 }
 
+/**
+ * get containers for all root nodes
+ * @param {jQuery?} $container
+ * @returns {*}
+ */
+function getRootContainers($container) {
+  if (!$container) {
+    $container = getCurrentFramework();
+  }
+
+  return $container.find('.competency-root-container').children('.competency-container');
+}
+
+/**
+ * get all children of a competency
+ * @param {jQuery} row the competency row
+ * @returns {jQuery}
+ */
+function getChildren(row) {
+  return $(row).closest('.competency-container').children('.competency-children').children().children('.competency-row');
+}
+
+/**
+ * Load the selected framework
+ * @returns {Promise<void>}
+ */
 async function loadSelectedFramework() {
   var $select = $('.coursecompetenciesadd select[name="frameworkid"]');
   var selectedText = $select.find("option:selected").text();
@@ -242,19 +295,32 @@ async function loadSelectedFramework() {
     $existingFramework.show();
   } else {
     // Loading info table
-    var $container = $('<div data-frameworkid="' + frameworkid + '">' + s[0] + '</div>').appendTo('#local_displace-framework-container');
+    var $container = $('<div data-frameworkid="' + frameworkid + '">' + s[0] + '</div>')
+      .appendTo('#local_displace-framework-container');
 
-    $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' + courseid + '&frameworkid=' + frameworkid).then(ret => {
+    $.get(Config.wwwroot + '/local/displace/competency/coursecompetenciesadd.php?action=competency_selector_tree&courseid=' +
+      courseid + '&frameworkid=' + frameworkid).then(ret => {
       $container.html('');
       $container.append(ret);
 
-      initContainer($container);
-      // setTimeout(() => initContainer($container), 200);
+      sessionCompetencies.forEach((id) => {
+        $container.find('.competency-row[data-id=' + id + ']').addClass('used');
+      });
+
+      if (debug) {
+        console.log('root container', getRootContainers($container).length, getRootContainers($container));
+      }
+
+      openDefaultNodes();
     });
   }
-  // document.location.href = document.location.href.replace(/\?.*/, '') + '?courseid=' + Config.courseId + '&frameworkid=' + this.value;
 }
 
+/**
+ * Get strings from the server.
+ * @param {array} requests requested strings
+ * @returns {Promise<*>}
+ */
 async function get_strings(requests) {
   return Str.get_strings(requests).then(strings => {
     var result = {};
@@ -267,19 +333,120 @@ async function get_strings(requests) {
 }
 
 /**
+ * Escape HTML special characters.
+ * @param {string} str
+ * @returns {string}
+ */
+function escapeHTML(str) {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
+ * Escape regular expression special characters.
+ * @param {string} str
+ * @returns {string}
+ */
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Update the search results.
+ */
+function updateSearch() {
+  const $search = $('.local_displace.competency .simplesearchform :input[type="text"]');
+  const searchText = $search.val().trim();
+
+  const $container = getCurrentFramework();
+
+  $('#local_displace-table-search-not-entries-found-message').addClass('hidden');
+  $('#local_displace-table-search-more-entries-found').addClass('hidden');
+
+  const $oldFoundRows = $container.find('.competency-row.is-found');
+  $oldFoundRows.removeClass('is-found');
+  $oldFoundRows.find('.shortname.highlighted').remove();
+
+  if (searchText.length == 0) {
+    // alle Elemente anzeigen
+    $container.find('.competency-container.hidden').removeClass('hidden');
+    // getRootContainers($container).removeClass('hidden');
+
+    if ($oldFoundRows.length) {
+      // leave tree as is
+    } else {
+      // last search was empty, so show default table
+
+      // first hide and close all
+      $container.find('.competency-row.open').removeClass('open');
+
+      openDefaultNodes();
+    }
+  } else {
+    // first hide and close all
+    $container.find('.competency-row.open').removeClass('open');
+    $container.find('.competency-container').addClass('hidden');
+
+    const searchParts = searchText.toLowerCase().split(/\s+/);
+
+    // show found items
+    var $foundRows = $container.find('.shortname')
+      .filter((index, el) => {
+        var text = el.textContent.toLowerCase();
+        return searchParts.every(part => text.includes(part));
+      })
+      .closest('.competency-row');
+
+    const maxFound = 300;
+    const moreFound = $foundRows.length > maxFound;
+    $foundRows = $foundRows.slice(0, maxFound);
+
+    if ($foundRows.length) {
+      // mark them found
+      $foundRows.addClass('is-found');
+      // then open it and all parents
+      $foundRows.parents('.competency-container').children('.competency-row.has-children').addClass('open');
+      // show container and all parent containers
+      $foundRows.parents('.competency-container').removeClass('hidden');
+      // if a parent is found, show all children
+      $foundRows.closest('.competency-container').find('.competency-container.hidden').removeClass('hidden');
+
+      // highlight text inside the row
+      const escapedStr = searchParts.map(part => escapeRegExp(escapeHTML(part))).join('|');
+      const regexp = new RegExp(`(${escapedStr})`, 'gi');
+      $foundRows.find('.shortname').each(function (index, el) {
+        // replace each part with a <mark/> tag
+        $('<span class="shortname highlighted">' + el.textContent.replace(regexp, '<mark>$1</mark>') + '</span>').insertBefore(el);
+      });
+
+      if (moreFound) {
+        $('#local_displace-table-search-more-entries-found').removeClass('hidden')
+          .find('.num').html(maxFound);
+      }
+    } else {
+      $('#local_displace-table-search-not-entries-found-message').removeClass('hidden');
+    }
+  }
+}
+
+/**
  * Initially collapse all competency frameworks.
- * @param {string} uniqid of template.
  */
 export function competenciesaddInit() {
   if (debug) {
     console.log('competenciesaddInit');
   }
 
-  $('.coursecompetenciesadd select[name="frameworkid"]').change(function(){
+  $('.coursecompetenciesadd select[name="frameworkid"]').change(function () {
     // clear old search
     var $search = $('.local_displace.competency .simplesearchform :input[type="text"]');
     if ($search.val()) {
       $search.val('').trigger('input');
+      updateSearch();
     }
 
     loadSelectedFramework();
@@ -295,7 +462,7 @@ export function competenciesaddInit() {
   $('#local_displace-framework-container')
     .on('click', '.has-children .toggler', function (e) {
       e.preventDefault();
-      toggleNode(this, null, true);
+      toggleNode(this, null);
     })
     // handle other events
     .on('click', '.addsingle', function (e) {
@@ -312,184 +479,58 @@ export function competenciesaddInit() {
     });
 
   $(document).on('click', '.local_displace.competency .simplesearchform .clear-button', function () {
-    $(this).closest('.clear-button-wrapper').find(':input[type="text"]').val('').trigger('input');
+    $(this).closest('.clear-button-wrapper').find(':input[type="text"]').val('').trigger('input').focus();
+    updateSearch();
+  });
+
+  $(document).on('click', '.local_displace.competency .simplesearchform button', function () {
+    updateSearch();
+  });
+
+  $(document).on('keypress', ':input[name="competency-search"]', function (e) {
+    if (e.which === 13) {  // 13 is the Enter key code
+      // Action to perform when Enter is pressed
+      e.preventDefault();
+      updateSearch();
+    }
   });
 
   $(document).on('input', ':input[name="competency-search"]', function () {
     const searchText = this.value.trim();
-
-    var $container = getCurrentFramework();
-
-    $('#local_displace-table-search-not-entries-found-message').addClass('hidden');
     $(this).closest('.clear-button-wrapper').find('.clear-button').toggle(searchText.length > 0);
-
-    var $oldFoundRows = $container.find('.competency-row.is-found');
-    $oldFoundRows.removeClass('is-found');
-
-    if (searchText.length <= 2) {
-      getRootContainers($container).removeClass('hidden');
-      if ($oldFoundRows.length) {
-        // leave tree as is
-      } else {
-        // last search was empty, so show default table
-
-        // first hide and close all
-        $container.find('.competency-row.open').removeClass('open');
-
-        // open first level
-        getRootContainers($container).each(function () {
-          toggleNode(this, true);
-        });
-
-        // open used competencies
-        $container.find('.competency-row.used').parents('.competency-container').children('.competency-row.has-children').addClass('open');
-      }
-    } else {
-      // first hide and close all
-      $container.find('.competency-row.open').removeClass('open');
-
-      getRootContainers($container).addClass('hidden');
-
-      // show found items
-      var $foundRows = $container.find('.shortname')
-        .filter((index, el) => el.textContent.toLowerCase().includes(searchText.toLowerCase()))
-        .closest('.competency-row')
-        .addClass('is-found').slice(0, 1000);
-
-      if ($foundRows.length) {
-        // then open it and all parents
-        $foundRows.parents('.competency-container').children('.competency-row.has-children').addClass('open');
-        $container.find('.competency-container.hidden').has('> .competency-row.open').removeClass('hidden');
-        $foundRows.filter('.has-children').addClass('open');
-      } else {
-        $('#local_displace-table-search-not-entries-found-message').removeClass('hidden');
-      }
-    }
   });
 }
 
-// function getParentPath(path) {
-//   if (path) {
-//     return path.replace(/\/[0-9]+$/, '');
-//   }
-// }
-
-function getRootContainers($container) {
-  if (!$container) {
-    $container = getCurrentFramework();
-  }
-
-  return $container.find('.competency-root-container').children('.competency-container');
-}
-
-function initContainer($container) {
-  if (sessionCompetencies.length) {
-    sessionCompetencies.forEach((id) => {
-      $container.find('.competency-row[data-id=' + id + ']').addClass('used');
-    });
-  }
-
-  // open first level
-  if (debug) {
-  console.log('root container', getRootContainers($container).length, getRootContainers($container));
-  }
-  getRootContainers($container).each(function () {
-      toggleNode(this, true);
-    });
+/**
+ * Open all used competencies or at least first level
+ */
+function openDefaultNodes() {
+  const $container = getCurrentFramework();
 
   // open used competencies
-  $container.find('.competency-row.used').parents('.competency-container').children('.competency-row.has-children').addClass('open');
-}
+  $container.find('.competency-row.used').parents('.competency-container').children('.competency-row.has-children')
+    .addClass('open');
 
-function getChildren(tr) {
-  return $(tr).closest('.competency-container').children('.competency-children').children().children('.competency-row');
+  if (!document.location.href.match(/package_edit.php/) && $container.find('.open').length == 0) {
+    // erste ebene öffnen, aber nicht auf der package_edit.php, weil sonst wird die Liste zu lange
+    // und auch nicht, wenn schon Elemente ausgewählt sind
+    getRootContainers($container).each(function () {
+      toggleNode(this, true);
+    });
+  }
 }
 
 /**
  * Recursively toggle nodes.
- * @param {DOMElement} sender
+ * @param {HTMLElement} el the node to toggle
+ * @param {boolean} open
  */
-function toggleNode(sender, open = undefined, animate = false) {
-  var $sender = $(sender);
-  if ($sender.is('.competency-container')) {
-    $sender = $sender.children('.competency-row');
+function toggleNode(el, open = undefined) {
+  var $el = $(el);
+  if ($el.is('.competency-container')) {
+    $el = $el.children('.competency-row');
   } else {
-    $sender = $sender.closest('.competency-row');
+    $el = $el.closest('.competency-row');
   }
-  $sender.toggleClass('open', open);
-  return;
-
-  let $tr = $(sender).closest('.competency-row');
-  let $table = $tr.closest('table');
-
-  if (open === null || open === undefined) {
-    open = !$tr.hasClass('children-visible');
-  }
-  let close = !open;
-
-  // do open/close only if it isn't already opened/closed
-  close = close && $tr.hasClass('children-visible');
-  open = open && !$tr.hasClass('children-visible');
-
-  if (close) {
-    $tr
-      .removeClass('children-visible')
-      .find('.fa-folder').removeClass('fa-folder-open');
-
-    // Make all children hidden.
-    var $children = $table.find('tr[data-fullpath^="' + $tr.attr('data-fullpath') + '/"]').not('.hidden');
-    if (!animate) {
-      $children.addClass('hidden');
-    } else {
-      var $wrapper = $children.find('.sliding-wrapper')
-      const height = $wrapper.outerHeight(); // Get current height
-      $wrapper.css('max-height', height); // Set height for transition
-      setTimeout(() => {
-        $wrapper.css('max-height', 0); // Animate to height 0
-        setTimeout(() => {
-          $children.addClass('hidden');
-          $wrapper.css('max-height', '');
-        }, 500); // Remove element from layout
-      }, 10); // Timeout for
-    }
-  }
-
-  if (open) {
-    $tr
-      .addClass('children-visible')
-      .find('.fa-folder').addClass('fa-folder-open');
-
-    // Make direct children visible and children of the children if they are open too.
-    var $children = getChildren($tr);
-    var $all = getChildren($tr);
-
-    do {
-      $children = $children.filter('.children-visible');
-
-      // get all subchildren in an array
-      $children = $children.map(function () {
-        return $children = getChildren(this).toArray()
-      });
-
-      $all = $all.add($children);
-    } while ($children.length > 0)
-
-    $children = $all;
-
-    if (!animate) {
-      $children.removeClass('hidden');
-    } else {
-      var $wrapper = $children.find('.sliding-wrapper')
-      $children.removeClass('hidden');
-      const height = 100; // Get current height
-      // const height = $wrapper.outerHeight(); // Get current height
-      $wrapper.css('max-height', 10); // Set height for transition
-      setTimeout(() => {
-        $wrapper.css('max-height', height);
-        setTimeout(() => {
-          $wrapper.css('max-height', '');
-        }, 500); // Remove element from layout
-      }, 10); // Timeout for
-    }
-  }
+  $el.toggleClass('open', open);
 }

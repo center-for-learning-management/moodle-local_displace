@@ -1,5 +1,11 @@
 // out: ../style/competency.css, sourcemap: false, compress: true
-.local_displace.competency {
+.local_displace.coursecompetenciesadd  {
+  mark {
+    padding: 0;
+    border-radius: 5px;
+    background-color: rgba(110, 168, 46, 0.5);
+  }
+
   .competency-header {
     display: flex;
     border-bottom: 1px solid #ccc;
@@ -16,7 +22,6 @@
   }
 
   .competency-children {
-    //display: none;
     max-height: 0;
     overflow: hidden;
     opacity: 0;
@@ -43,8 +48,7 @@
     }
 
     & + .competency-children {
-      //display: block;
-      max-height: 10000px; /* Large enough to accommodate content */
+      max-height: 1000000px; /* Large enough to accommodate content */
       opacity: 1;
     }
   }
@@ -80,14 +84,6 @@
   .used:not(.displace-alert) {
     background: #0a78d1;
     color: white;
-    //font-weight: bold;
-    //.addsingle {
-    //  display: none;
-    //}
-    //
-    //.removesingle {
-    //  display: inline-block;
-    //}
 
     a {
       color: white;
@@ -98,8 +94,7 @@
     text-decoration: none;
   }
 
-  /* icon und text richtig ausrichten */
-
+  // icon und text richtig ausrichten
   .toggler {
     flex-grow: 1;
 
@@ -112,8 +107,8 @@
     padding-left: 6px;
   }
 
-  .is-found .shortname {
-    font-weight: bold;
+  .shortname + .shortname {
+    display: none;
   }
 
   .has-children {
@@ -154,7 +149,16 @@
     }
   }
 
-  //td {
-  //  transition: border-top-width 0.5s ease; /* Smooth transition for height */
-  //}
+  // Einrückung
+  .competency-row-padding(@level: 0, @max-level: 20) when (@level =< @max-level) {
+    .competency-container {
+      & > .competency-row {
+        padding-left: (28px * @level + 40px);
+      }
+
+      .competency-row-padding(@level + 1, @max-level);
+    }
+  }
+
+  .competency-row-padding();
 }

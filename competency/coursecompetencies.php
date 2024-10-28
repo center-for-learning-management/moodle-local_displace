@@ -49,7 +49,7 @@ $PAGE->requires->css('/local/displace/style/competency.css');
 
 $PAGE->navbar->add(get_string('coursecompetencies', 'tool_lp'), $PAGE->url);
 
-$sql = "SELECT *
+$sql = "SELECT *, ccc.id as coursecompetencyid
             FROM {competency} c, {competency_coursecomp} ccc
             WHERE c.id = ccc.competencyid
                 AND ccc.courseid = ?

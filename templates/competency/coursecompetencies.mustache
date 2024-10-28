@@ -59,16 +59,17 @@
     <table class="generaltable" data-courseid="{{courseid}}">
         <thead>
             <tr>
-                <td>{{#str}} rate, tool_lp {{/str}}</td>
-                <td>{{#str}} coursecompetencies, tool_lp {{/str}}</td>
-                <td>{{#str}} competencyframework, tool_lp {{/str}}</td>
-                <td>{{#str}} activities, tool_lp {{/str}}</td>
-                <td>{{#str}} uponcoursecompletion, tool_lp {{/str}}</td>
+                <th>{{#str}} rate, tool_lp {{/str}}</th>
+                <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
+                <th>{{#str}} competencyframework, tool_lp {{/str}}</th>
+                <th>{{#str}} activities, tool_lp {{/str}}</th>
+                <th>{{#str}} uponcoursecompletion, tool_lp {{/str}}</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             {{#competencies}}
-                <tr id="tr-{{uniqid}}-{{id}}" data-id="{{id}}">
+                <tr class="competency-row" data-id="{{competencyid}}" data-coursecompetencyid="{{coursecompetencyid}}">
                     <td style="text-align: center;">
                         <a href="{{{wwwroot}}}/admin/tool/lp/user_competency_in_course.php?courseid={{courseid}}&competencyid={{competencyid}}">
                             <i class="fa fa-users"></i>
@@ -77,14 +78,14 @@
                     <td>
                         {{#has_description}}
                             <details>
-                                <summary>{{longname}}</summary>
+                                <summary class="shortname">{{longname}}</summary>
                                 <p>
                                     {{{description}}}
                                 </p>
                             </details>
                         {{/has_description}}
                         {{^has_description}}
-                            {{longname}}
+                            <span class="shortname">{{longname}}</span>
                         {{/has_description}}
                     </td>
                     <td>
@@ -125,7 +126,7 @@
                         {{#canmanagecoursecompetencies}}
                         <div data-region="coursecompetency-ruleoutcome">
                             <select class="custom-select"
-                                onchange="var select = this; require(['local_displace/competency'], function(C) { C.setRuleOutcomeOption(select); });">
+                                onchange="var _this = this; require(['local_displace/competency'], function(C) { C.setRuleOutcomeOption(_this); });">
                               {{#ruleoutcomeoptions}}
                                  <option value="{{value}}" {{#selected}}selected{{/selected}}>{{text}}</option>
                               {{/ruleoutcomeoptions}}
@@ -135,6 +136,11 @@
                         {{^canmanagecoursecompetencies}}
                         -
                         {{/canmanagecoursecompetencies}}
+                    </td>
+                    <td>
+                        <a href="#" onclick="var _this = this; require(['local_displace/competency'], function(C) { C.competencyRemoveFromList(_this); }); return false;">
+                            <i class="fa fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
             {{/competencies}}

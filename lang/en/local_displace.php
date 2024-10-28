@@ -25,6 +25,8 @@ $string['cachedef_application'] = 'Applicationcache for local_displace';
 $string['cachedef_request'] = 'Requestcache for local_displace';
 $string['cachedef_session'] = 'Sessioncache for local_displace';
 
+$string['competencies'] = 'Competencies';
+
 $string['admin:user:setting'] = 'User list';
 $string['admin:user:setting:enabled'] = 'Enable this displacement';
 
