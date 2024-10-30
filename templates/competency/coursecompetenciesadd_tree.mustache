@@ -1,0 +1,34 @@
+<div class="coursecompetenciesadd_framework" data-frameworkid="{{frameworkid}}">
+    <table border="0" class="generaltable table-sm">
+        <tr>
+            <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
+            <th colspan="2" style="text-align: center;">{{#str}} action {{/str}}</th>
+        </tr>
+        {{#competencies}}
+        <tr class="hidden {{#haschildren}}has-children{{/haschildren}} {{#used}}used{{/used}} "
+            data-id="{{id}}" data-fullpath="{{path}}{{id}}">
+            <td style="padding-left: {{depthpx}}px;" class="toggler">
+                <i class="fa {{#haschildren}}fa-folder{{/haschildren}} {{^haschildren}}fa-file{{/haschildren}}"></i>
+                <span class="shortname">{{longname}}</span>
+            </td>
+            <td style="text-align: right;">
+                {{#haschildren}}{{#canselectall}}
+                    <a href="#" class="addmultiple" title="Alle auswählen / Auswahl aufheben">
+                        <i class="fa fa-list"></i>
+                    </a>
+                {{/canselectall}}{{/haschildren}}
+            </td>
+            <td style="text-align: left;">
+                {{#canselect}}
+                <a href="#" class="removesingle">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a href="#" class="addsingle">
+                    <i class="fa fa-plus"></i>
+                </a>
+                {{/canselect}}
+            </td>
+        </tr>
+        {{/competencies}}
+    </table>
+</div>

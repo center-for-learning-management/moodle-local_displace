@@ -36,10 +36,7 @@ class table extends table_sql {
     protected function define_table_configs() {
         global $DB;
         $fullname = $DB->sql_fullname();
-        $this->set_sql(
-            "*,{$fullname} as realname",
-            '{user}'
-        );
+        $this->set_sql_query("SELECT *,{$fullname} as realname FROM {user}");
 
         // Define headers and columns.
         $cols = [
