@@ -63,10 +63,20 @@ class competencylib {
         return $competenciesByParent;
     }
 
-    public static function render_competency_selector($courseid, $frameworkid, $initially_hidden = false) {
+    public static function prepare_competency_selector() {
+        global $PAGE;
+
+        static $prepared = false;
+        if (!$prepared) {
+            $prepared = true;
+            $PAGE->requires->css('/local/displace/style/competency.css');
+        }
+    }
+
+    public static function render_competency_selector($courseid, $frameworkid, $initially_hidden = false, string $session_competencies_input = '') {
         global $DB, $OUTPUT, $PAGE;
 
-        $PAGE->requires->css('/local/displace/style/competency.css');
+        static::prepare_competency_selector();
 
         if ($courseid) {
             // $sql = "SELECT DISTINCT(c.id) id
@@ -124,7 +134,7 @@ class competencylib {
             'initially_hidden' => $initially_hidden,
             'courseid' => $courseid,
             'frameworks' => $frameworks,
-            'session_competencies' => $_REQUEST['session_competencies'] ?? '',
+            'session_competencies_input' => $session_competencies_input,
         ];
 
         return $OUTPUT->render_from_template('local_displace/competency/coursecompetenciesadd', $params);
@@ -137,9 +147,8 @@ class competencylib {
         $canselectall = (int)get_config('local_displace', 'competency_canselectall');
 
         $uses_komet = (int)get_config('local_komettranslator', 'version');
-        $komet_types = ['subject', 'topic', 'descriptor'];
 
-        $renderItems = function($competencies, $depth = 0) use (&$competenciesByParent, &$renderItems, &$komet_types, $uses_komet, $canselect, $canselectall) {
+        $renderItems = function($competencies, $depth = 0) use (&$competenciesByParent, &$renderItems, $uses_komet, $canselect, $canselectall) {
             global $OUTPUT;
 
             foreach ($competencies as $competency) {
@@ -153,11 +162,9 @@ class competencylib {
                 $usedbykomet = false;
 
                 if ($uses_komet) {
-                    foreach ($komet_types as $komet_type) {
-                        $usedbykomet = \local_komettranslator\api::get_copmetency_mapping($komet_type, $competency->id);
-                        if ($usedbykomet) {
-                            break;
-                        }
+                    $usedbykomet = !!\local_komettranslator\api::get_copmetency_mapping($competency->id);
+                    if ($usedbykomet) {
+                        break;
                     }
                 }
 

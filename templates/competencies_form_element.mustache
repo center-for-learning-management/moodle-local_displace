@@ -1,0 +1,28 @@
+<input type="hidden"
+       name="{{element.name}}"
+    {{#element.frozen}}
+       readonly {{#element.hardfrozen}}disabled{{/element.hardfrozen}}
+    {{/element.frozen}}
+       id="{{element.id}}"
+       value="{{element.value}}"
+       {{#element.size}}size="{{element.size}}"{{/element.size}}
+    {{#error}}
+       autofocus aria-describedby="{{element.iderror}}"
+    {{/error}}
+    {{{element.attributes}}} >
+
+{{#competencies_output}}
+    <div class="to-toggle-{{uniqid}}">
+        {{{.}}}
+        <div class="btn btn-secondary" onclick="require(['jquery'], function($) { $('.to-toggle-{{uniqid}}').toggle().removeClass('hidden').find('select[name=\'frameworkid\']').trigger('change'); }).trigger('change'); return false;">
+            Kompetenzen ändern
+        </div>
+    </div>
+    <div class="to-toggle-{{uniqid}} hidden">
+        {{{competencies_selector}}}
+    </div>
+{{/competencies_output}}
+
+{{^competencies_output}}
+    {{{competencies_selector}}}
+{{/competencies_output}}
