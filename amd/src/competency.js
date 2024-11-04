@@ -110,8 +110,15 @@ export function competenciesSelectorInit(config) {
 
   $(function () {
     // only load tree if container is visible
-    if ($competenciesSelectorContainer.find('.local_displace-framework-container').is(':visible')) {
+    if ($competenciesSelectorContainer.is(':visible')) {
       loadSelectedFramework();
+    } else {
+      var interval = setInterval(function () {
+        if ($competenciesSelectorContainer.is(':visible')) {
+          clearInterval(interval);
+          loadSelectedFramework();
+        }
+      }, 300);
     }
   });
 

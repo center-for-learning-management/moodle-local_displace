@@ -159,13 +159,10 @@ class competencylib {
                     $competency->haschildren = true;
                 }
 
+                // TODO: this can be removed
                 $usedbykomet = false;
-
                 if ($uses_komet) {
                     $usedbykomet = !!\local_komettranslator\api::get_copmetency_mapping($competency->id);
-                    if ($usedbykomet) {
-                        break;
-                    }
                 }
 
                 if ($competency->used || !$uses_komet || !$usedbykomet || $competency->depth >= $canselect) {

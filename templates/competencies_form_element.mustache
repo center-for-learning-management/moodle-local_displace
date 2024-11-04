@@ -14,7 +14,7 @@
 {{#competencies_output}}
     <div class="to-toggle-{{uniqid}}">
         {{{.}}}
-        <div class="btn btn-secondary" onclick="require(['jquery'], function($) { $('.to-toggle-{{uniqid}}').toggle().removeClass('hidden').find('select[name=\'frameworkid\']').trigger('change'); }).trigger('change'); return false;">
+        <div class="btn btn-secondary" onclick="require(['jquery'], function($) { $('.to-toggle-{{uniqid}}').toggle().removeClass('hidden'); }); return false;">
             Kompetenzen ändern
         </div>
     </div>
