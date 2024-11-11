@@ -15,18 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package   local_displace
- * @copyright 2022 Zentrum für Lernmanagement (www.lernmanagement.at)
- * @author    Robert Schrenk
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_displace
+ * @copyright  2024 Austrian Federal Ministry of Education
+ * @author     GTN solutions
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 
 defined('MOODLE_INTERNAL') || die;
 
-function local_displace_after_config() {
-
-}
-
-function local_displace_before_standard_html_head() {
-
-}
+$callbacks = [
+    [
+        'hook' => \core\hook\after_config::class,
+        'callback' => [\local_displace\hook_callbacks::class, 'after_config'],
+        'priority' => 500,
+    ],
+    [
+        'hook' => \core\hook\output\before_standard_head_html_generation::class,
+        'callback' => [\local_displace\hook_callbacks::class, 'before_standard_head_html_generation'],
+        'priority' => 500,
+    ],
+];
