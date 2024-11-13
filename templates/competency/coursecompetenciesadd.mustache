@@ -26,20 +26,10 @@
     * none
 
     Context variables required for this template:
-    * wwwroot
     * competencies
 
     Example context (json):
     {
-        "competencies": [
-            {
-                id: 1,
-                shortname: "Competency 1",
-                description: "",
-                depth: 0,
-                ...
-            }
-        ],
         "courseid": 25,
         "frameworks": [
             {
@@ -48,67 +38,54 @@
                 ...
             }
         ],
-        "wwwroot": "http://.......",
     }
 }}
-<div class="local_displace competency coursecompetenciesadd">
-    <form method="get" action="" enctype="multipart/form-data">
-        <input type="hidden" name="courseid" value="{{courseid}}" />
-        <select name="frameworkid" onchange="if(this.value != 0) { this.form.submit(); }">
-            {{#frameworks}}
-            <option value="{{id}}"{{#selected}} selected="selected"{{/selected}}>
-                {{shortname}}
-            </option>
-            {{/frameworks}}
-        </select>
-    </form>
+<div class="local_displace competency coursecompetenciesadd {{#initially_hidden}}hidden{{/initially_hidden}}">
+    <input type="hidden" name="session_competencies" value="{{session_competencies}}"/>
+    <div style="display: flex; justify-content: space-between;" class="mb-2">
+        <div>
+            <select name="frameworkid">
+                {{#frameworks}}
+                <option value="{{id}}"{{#selected}} selected="selected"{{/selected}}>
+                    {{shortname}}
+                </option>
+                {{/frameworks}}
+            </select>
+        </div>
+        <div class="simplesearchform">
+            <div class="input-group" style="flex-wrap: nowrap">
+              <label for="searchinput-{{uniqid}}">
+                <span class="sr-only">{{#str}} search, core {{/str}}</span>
+              </label>
+              <input type="text"
+                     class="form-control"
+                     placeholder="{{#str}} search, core {{/str}}"
+                     aria-label="{{#str}} search, core {{/str}}"
+                     name="competency-search"
+                     data-region="input"
+                     autocomplete="off"
+              >
+              <div class="input-group-append" style="flex-shrink: 0"> {{! ohne flex-shrink wird das Suchformular nicht richtig angezeigt?!? }}
+                <button type="submit" class="btn btn-primary search-icon">
+                  {{#pix}} a/search, core {{/pix}}
+                  <span class="sr-only">{{#str}} search, core {{/str}}</span>
+                </button>
+              </div>
+            </div>
+        </div>
+    </div>
 
-    <table border="0" class="generaltable" id="coursecompetenciesadd-{{uniqid}}"
-        data-courseid="{{courseid}}">
-        <tr>
-            <th>{{#str}} coursecompetencies, tool_lp {{/str}}</th>
-            <th colspan="2" style="text-align: center;">{{#str}} action {{/str}}</th>
-        </tr>
-        {{#competencies}}
-        <tr class="{{#parentid}} hidden {{/parentid}} childof-{{parentid}} {{#used}} used {{/used}}"
-            data-id="{{id}}" data-path="{{path}}" data-childof="{{parentid}}">
-            <td style="padding-left: {{depthpx}}px;">
-                {{#haschildren}}
-                    <i class="fa fa-folder"></i>
-                    <a href="#" onclick="var a = this; require(['local_displace/competency'], function(C) { C.toggleNode(a)}); return false;">
-                        <span class="shortname">{{shortname}}</span>
-                    </a>
-                {{/haschildren}}
-                {{^haschildren}}
-                    <i class="fa fa-file"></i>
-                    <span class="shortname">{{shortname}}</span>
-                {{/haschildren}}
-            </td>
-            <td style="text-align: right;">
-                {{#haschildren}}{{#canselectall}}
-                    <a href="#" onclick="{{{btnaddmultiple}}}"
-                        class="addmultiple">
-                        <i class="fa fa-list"></i>
-                    </a>
-                {{/canselectall}}{{/haschildren}}
-            </td>
-            <td style="text-align: left;">
-                {{#canselect}}
-                <a href="#" onclick="{{{btnremovesingle}}}"
-                    class="removesingle">
-                    <i class="fa fa-trash"></i>
-                </a>
-                <a href="#" onclick="{{{btnaddsingle}}}"
-                    class="addsingle">
-                    <i class="fa fa-plus"></i>
-                </a>
-                {{/canselect}}
-            </td>
-        </tr>
-        {{/competencies}}
-    </table>
+    <div id="local_displace-framework-container">
+        <div>
+            Lade Daten...
+        </div>
+    </div>
+
+    <div id="local_displace-table-search-not-entries-found-message" class="hidden">
+        <p>Keine Einträge gefunden</p>
+    </div>
 </div>
 
 {{#js}}
-require(['local_displace/competency'], function(C) { C.toggleInit('{{uniqid}}')});
+require(['local_displace/competency'], function(C) { C.competenciesaddInit('{{uniqid}}')});
 {{/js}}
