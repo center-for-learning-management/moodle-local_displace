@@ -24,11 +24,12 @@
 require_once('../../../../config.php');
 
 $sitecontext = \context_system::instance();
-require_admin();
+require_capability('local/displace:admin_user_viewtable', $sitecontext);
 
 $PAGE->set_context($sitecontext);
 $PAGE->set_url('/local/displace/admin/user/user.php');
 $PAGE->set_primary_active_tab('siteadminnode');
+$PAGE->set_title(get_string('userlist', 'admin'));
 $PAGE->navbar->add(get_string('userlist', 'admin'), $PAGE->url);
 
 $table = new \local_displace\admin\user\table();

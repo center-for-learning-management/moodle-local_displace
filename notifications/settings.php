@@ -34,7 +34,7 @@ class settings {
             return;
         }
 
-        $settings = new \admin_settingpage('local_displace_competency', get_string('notifications:setting', 'local_displace'));
+        $settings = new \admin_settingpage('local_displace_notifications', get_string('notifications:setting', 'local_displace'));
         $ADMIN->add('local_displace', $settings);
 
         $settings->add(
