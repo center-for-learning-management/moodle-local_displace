@@ -23,10 +23,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+// can be removed in moodle 4.5
 function local_displace_after_config() {
-
-}
-
-function local_displace_before_standard_html_head() {
-
+    \local_displace\hook_callbacks::after_config();
 }

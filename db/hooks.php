@@ -30,9 +30,4 @@ $callbacks = [
         'callback' => [\local_displace\hook_callbacks::class, 'after_config'],
         'priority' => 500,
     ],
-    [
-        'hook' => \core\hook\output\before_standard_head_html_generation::class,
-        'callback' => [\local_displace\hook_callbacks::class, 'before_standard_head_html_generation'],
-        'priority' => 500,
-    ],
 ];

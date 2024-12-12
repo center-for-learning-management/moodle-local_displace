@@ -27,7 +27,7 @@ use \core\hook\after_config;
 use local_eduportal\core_user;
 
 class hook_callbacks {
-    public static function after_config($hook): void {
+    public static function after_config(): void {
         global $CFG;
 
         // get path within the moodle dir + fix slashes in windows
@@ -72,8 +72,5 @@ class hook_callbacks {
                 }
                 break;
         }
-    }
-    public static function before_standard_head_html_generation($hook): void {
-
     }
 }
