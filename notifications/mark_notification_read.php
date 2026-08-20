@@ -34,7 +34,7 @@ if (isguestuser()) {
 
 $notificationid = required_param('notificationid', PARAM_INT);
 
-$notification = $DB->get_record('notifications', array('id' => $notificationid));
+$notification = $DB->get_record('notifications', ['id' => $notificationid]);
 
 $redirecturl = new moodle_url('/message/output/popup/notifications.php', ['notificationid' => $notificationid]);
 

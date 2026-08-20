@@ -26,7 +26,7 @@ require_once('../../../config.php');
 $courseid = required_param('courseid', PARAM_INT);
 $frameworkid = optional_param('frameworkid', 0, PARAM_INT);
 
-$urlparams = array('courseid' => $courseid, 'frameworkid' => $frameworkid);
+$urlparams = ['courseid' => $courseid, 'frameworkid' => $frameworkid];
 $PAGE->set_url('/local/displace/competency/coursecompetenciesadd.php', $urlparams);
 
 if ($courseid) {

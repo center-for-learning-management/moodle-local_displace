@@ -39,7 +39,7 @@ if (!empty($categoryid)) {
     $category = $topcategory;
 }
 
-$urlparams = array('categoryid' => $category->id);
+$urlparams = ['categoryid' => $category->id];
 $PAGE->set_context(\context_system::instance());
 $PAGE->set_url('/local/displace/coursecat/management.php', $urlparams);
 
@@ -58,7 +58,7 @@ $PAGE->navbar->add(get_string('coursecatmanagement', 'core'), $ccurl);
 if (!empty($category->id)) {
     $paths = explode('/', $category->path);
     array_shift($paths);
-    list($insql, $inparams) = $DB->get_in_or_equal($paths);
+    [$insql, $inparams] = $DB->get_in_or_equal($paths);
     $sql = "SELECT * FROM {course_categories} WHERE id $insql ORDER BY depth ASC";
     $categories = $DB->get_records_sql($sql, $inparams);
     foreach ($categories as $_category) {

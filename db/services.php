@@ -24,5 +24,5 @@
 defined('MOODLE_INTERNAL') || die;
 
 // We define the web service functions to install.
-$functions = array(
-);
+$functions = [
+];

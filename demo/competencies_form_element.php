@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -54,7 +53,7 @@ $PAGE->set_title('Captcha Demo');
 require_admin();
 
 $mform = new local_captcha_demo_form($PAGE->url);
-$mform->set_data(['test1' => '123', 'test2' => '456', ]);
+$mform->set_data(['test1' => '123', 'test2' => '456' ]);
 if ($fromform = $mform->get_data()) {
     echo $OUTPUT->header();
 
