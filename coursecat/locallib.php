@@ -30,6 +30,5 @@ class locallib {
      * call the function for its parent.
      */
     public static function navbar_parent($category) {
-
     }
 }

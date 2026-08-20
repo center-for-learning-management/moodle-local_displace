@@ -26,5 +26,4 @@ namespace local_displace;
 defined('MOODLE_INTERNAL') || die;
 
 class locallib {
-
 }

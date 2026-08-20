@@ -23,7 +23,7 @@
 
 namespace local_displace;
 
-use \core\hook\after_config;
+use core\hook\after_config;
 use local_eduportal\core_user;
 
 class hook_callbacks {
@@ -34,7 +34,8 @@ class hook_callbacks {
         $subpath = str_replace(
             str_replace('\\', '/', $CFG->dirroot),
             '',
-            str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME']));
+            str_replace('\\', '/', $_SERVER['SCRIPT_FILENAME'])
+        );
 
         switch ($subpath) {
             case "/admin/user.php":

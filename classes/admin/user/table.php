@@ -83,7 +83,8 @@ class table extends table_sql {
 
         $yesno = [ 'confirmed', 'deleted', 'emailstop', 'suspended' ];
         foreach ($yesno as $field) {
-            $this->set_column_options($field,
+            $this->set_column_options(
+                $field,
                 sql_column: $field,
                 select_options: [
                     ['text' => get_string('yes'), 'value' => 1],
@@ -95,7 +96,7 @@ class table extends table_sql {
 
     public function col_userpic($row) {
         global $OUTPUT;
-        return $OUTPUT->user_picture($row, array('size' => 35));
+        return $OUTPUT->user_picture($row, ['size' => 35]);
     }
 
     public function col_firstname($row) {
@@ -204,5 +205,4 @@ class table extends table_sql {
         }
         return implode(" ", $buttons);
     }
-
 }

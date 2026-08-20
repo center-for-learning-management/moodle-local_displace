@@ -37,7 +37,7 @@ require_login($course);
 $coursecompetencyconfigure = has_capability('moodle/competency:coursecompetencyconfigure', $context);
 $canmanagecoursecompetencies = has_capability('moodle/competency:coursecompetencymanage', $context);
 
-$urlparams = array('courseid' => $course->id);
+$urlparams = ['courseid' => $course->id];
 if (!empty($currentmodule)) {
     $urlparams['mod'] = $currentmodule;
 }
@@ -60,7 +60,7 @@ $coursecomps = $DB->get_records_sql($sql, $params);
 $ruleoutcomelist = \core_competency\course_competency::get_ruleoutcome_list();
 $ruleoutcomeoptions = [];
 foreach ($ruleoutcomelist as $value => $text) {
-    $ruleoutcomeoptions[$value] = array('value' => $value, 'text' => (string)$text, 'selected' => false);
+    $ruleoutcomeoptions[$value] = ['value' => $value, 'text' => (string)$text, 'selected' => false];
 }
 
 $frameworks = [];

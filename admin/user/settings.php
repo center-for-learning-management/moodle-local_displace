@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 class settings {
     /**
      * Add required settings to admin settings page.
-    **/
+     **/
     public static function admin_settings_page() {
         global $ADMIN;
         if (empty($ADMIN)) {
