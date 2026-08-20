@@ -79,8 +79,7 @@ class competencies_form_element extends \MoodleQuickForm_static {
      * @access public
      * @return mixed
      */
-    function exportValue(&$submitValues, $assoc = false)
-    {
+    function exportValue(&$submitValues, $assoc = false) {
         $value = $this->_findValue($submitValues);
         if (null === $value) {
             $value = $this->getValue();
@@ -143,13 +142,13 @@ class competencies_form_element extends \MoodleQuickForm_static {
 
             foreach ($competencies as $competence) {
                 // Try mapping to exacomp.
-                $mapping = \local_komettranslator\api::get_copmetency_mapping( $competence->id, 'descriptor');
+                $mapping = \local_komettranslator\api::get_copmetency_mapping($competence->id, 'descriptor');
                 if (!empty($mapping->id) && empty($flagfound[$mapping->sourceid . '_' . $mapping->itemid])) {
                     $title = \local_komettranslator\api::get_competency_longname($competence);
 
                     $parentName = '';
                     $parent = $competence;
-                    while ($parent = $DB->get_record('competency', array('id' => $parent->parentid))) {
+                    while ($parent = $DB->get_record('competency', ['id' => $parent->parentid])) {
                         $parentName = $parent->shortname . ($parentName ? ' / ' . $parentName : '');
                     }
                     if (!isset($competenciesByParent[$parentName])) {

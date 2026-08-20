@@ -46,6 +46,5 @@ class settings {
                 PARAM_INT
             )
         );
-
     }
 }

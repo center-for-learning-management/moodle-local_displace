@@ -109,7 +109,7 @@ class competencylib {
         }
 
         $path = explode('/', $context->path);
-        list($insql, $inparams) = $DB->get_in_or_equal($path);
+        [$insql, $inparams] = $DB->get_in_or_equal($path);
         $sql = "SELECT *
             FROM {competency_framework}
             WHERE visible=1

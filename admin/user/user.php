@@ -37,7 +37,7 @@ $table = new \local_displace\admin\user\table();
 echo $OUTPUT->header();
 $table->out();
 if (has_capability('moodle/user:create', $sitecontext)) {
-    $url = new moodle_url('/user/editadvanced.php', array('id' => -1));
+    $url = new moodle_url('/user/editadvanced.php', ['id' => -1]);
     echo $OUTPUT->single_button($url, get_string('addnewuser'), 'get');
 }
 echo $OUTPUT->footer();
